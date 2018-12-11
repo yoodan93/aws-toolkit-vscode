@@ -24,6 +24,7 @@ import { safeGet } from './shared/extensionUtilities'
 import { DefaultRegionProvider } from './shared/regions/defaultRegionProvider'
 import { DefaultSettingsConfiguration } from './shared/settingsConfiguration'
 import { AWSStatusBar } from './shared/statusBar'
+import { SymbolTreeDataProvider } from './symbolTreeDataProvider'
 
 export async function activate(context: vscode.ExtensionContext) {
 
@@ -72,6 +73,25 @@ export async function activate(context: vscode.ExtensionContext) {
         p.initialize()
         context.subscriptions.push(vscode.window.registerTreeDataProvider(p.viewProviderId, p))
     })
+
+    const symbolView = new SymbolTreeDataProvider()
+    symbolView.initialize()
+    context.subscriptions.push(vscode.window.registerTreeDataProvider(
+        'proto-symbols',
+        symbolView
+    ))
+
+    vscode.commands.registerTextEditorCommand(
+        'aws.proto.gotoActiveDocumentRange',
+        (textEditor, edit, range: vscode.Range) => {
+            vscode.window.showTextDocument(
+                textEditor.document,
+                {
+                    selection: range
+                }
+            )
+        }
+    )
 
     context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider(
         'lambda-node',
