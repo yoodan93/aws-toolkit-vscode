@@ -1,9 +1,9 @@
 {
-    "name": "aws-toolkit-vscode",
-    "displayName": "AWS Toolkit for Visual Studio Code",
-    "description": "An extension for working with Amazon Web Services in Visual Studio Code",
+    "name": "test-extension",
+    "displayName": "Test extension deployment",
+    "description": "temporary extension for testing marketplace deployments",
     "version": "0.0.1",
-    "publisher": "amazonwebservices",
+    "publisher": "cc2temp",
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
@@ -16,222 +16,23 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:aws.login",
-        "onCommand:aws.credential.profile.create",
-        "onCommand:aws.logout",
-        "onCommand:aws.showRegion",
-        "onCommand:aws.hideRegion",
-        "onView:lambda",
-        "onCommand:aws.samcli.detect",
-        "onCommand:aws.samcli.validate.version",
-        "onCommand:aws.lambda.createNewSamApp",
-        "onDebugInitialConfigurations"
+        "onCommand:aws.login"
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "%AWS.configuration.title%",
-            "properties": {
-                "aws.region": {
-                    "type": "array",
-                    "default": [],
-                    "description": "%AWS.configuration.regionDescription%"
-                },
-                "aws.profile": {
-                    "type": "string",
-                    "default": "",
-                    "description": "%AWS.configuration.profileDescription%"
-                },
-                "aws.onDefaultRegionMissing": {
-                    "type": "string",
-                    "default": "prompt",
-                    "markdownDescription": "%AWS.configuration.description.onDefaultRegionMissing%"
-                },
-                "aws.recentCredentials": {
-                    "type": "array",
-                    "default": [],
-                    "description": "%AWS.configuration.description.recentCredentials%"
-                },
-                "aws.samcli.location": {
-                    "type": "string",
-                    "default": "",
-                    "markdownDescription": "%AWS.configuration.description.samcli.location%"
-                },
-                "aws.samcli.debug.attach.timeout.millis": {
-                    "type": "number",
-                    "default": 30000,
-                    "markdownDescription": "%AWS.configuration.description.samcli.debug.attach.timeout%"
-                }
-            }
-        },
         "viewsContainers": {
-            "activitybar": [
-                {
-                    "id": "aws-explorer",
-                    "title": "%AWS.title%",
-                    "icon": "media/aws-logo.svg"
-                }
-            ]
+            "activitybar": []
         },
-        "views": {
-            "aws-explorer": [
-                {
-                    "id": "lambda",
-                    "name": "%AWS.lambda.explorerTitle%"
-                }
-            ]
-        },
+        "views": {},
         "menus": {
-            "commandPalette": [
-                {
-                    "command": "aws.deleteCloudFormation",
-                    "when": "false"
-                },
-                {
-                    "command": "aws.deleteLambda",
-                    "when": "false"
-                },
-                {
-                    "command": "aws.getLambdaConfig",
-                    "when": "false"
-                },
-                {
-                    "command": "aws.getLambdaPolicy",
-                    "when": "false"
-                },
-                {
-                    "command": "aws.invokeLambda",
-                    "when": "false"
-                },
-                {
-                    "command": "aws.refreshAwsExplorer",
-                    "when": "false"
-                },
-                {
-                    "command": "aws.showErrorDetails",
-                    "when": "false"
-                }
-            ],
-            "view/title": [
-                {
-                    "command": "aws.refreshAwsExplorer",
-                    "when": "view == lambda",
-                    "group": "navigation@5"
-                }
-            ],
-            "view/item/context": [
-                {
-                    "command": "aws.invokeLambda",
-                    "when": "view == lambda && viewItem =~ /^(awsRegionFunctionNode|awsCloudFormationFunctionNode)$/",
-                    "group": "0@1"
-                },
-                {
-                    "command": "aws.getLambdaConfig",
-                    "when": "view == lambda && viewItem =~ /^(awsRegionFunctionNode|awsCloudFormationFunctionNode)$/",
-                    "group": "1@1"
-                },
-                {
-                    "command": "aws.getLambdaPolicy",
-                    "when": "view == lambda && viewItem =~ /^(awsRegionFunctionNode|awsCloudFormationFunctionNode)$/",
-                    "group": "1@2"
-                },
-                {
-                    "command": "aws.deleteLambda",
-                    "when": "view == lambda && viewItem == awsRegionFunctionNode",
-                    "group": "2@1"
-                },
-                {
-                    "command": "aws.deleteCloudFormation",
-                    "when": "view == lambda && viewItem == awsCloudFormationNode",
-                    "group": "0@5"
-                },
-                {
-                    "command": "aws.showErrorDetails",
-                    "when": "view == lambda && viewItem == awsErrorNode",
-                    "group": "0@5"
-                },
-                {
-                    "command": "aws.hideRegion",
-                    "group": "0@1",
-                    "when": "view == lambda && viewItem == awsRegionNode"
-                }
-            ]
+            "commandPalette": [],
+            "view/title": [],
+            "view/item/context": []
         },
         "commands": [
             {
-                "command": "aws.lambda.createNewSamApp",
-                "title": "%AWS.command.createNewSamApp%",
-                "category": "AWS"
-            },
-            {
                 "command": "aws.login",
-                "title": "%AWS.command.login%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.credential.profile.create",
-                "title": "%AWS.command.credential.profile.create%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.logout",
-                "title": "%AWS.command.logout%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.showRegion",
-                "title": "%AWS.command.showRegion%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.hideRegion",
-                "title": "%AWS.command.hideRegion%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.invokeLambda",
-                "title": "%AWS.command.invokeLambda%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.deleteLambda",
-                "title": "%AWS.command.deleteLambda%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.refreshAwsExplorer",
-                "title": "%AWS.command.refreshAwsExplorer%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.getLambdaConfig",
-                "title": "%AWS.command.getLambdaConfig%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.getLambdaPolicy",
-                "title": "%AWS.command.getLambdaPolicy%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.samcli.detect",
-                "title": "%AWS.command.samcli.detect%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.samcli.validate.version",
-                "title": "%AWS.command.samcli.validate.version%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.deleteCloudFormation",
-                "title": "%AWS.command.deleteCloudFormation%",
-                "category": "AWS"
-            },
-            {
-                "command": "aws.showErrorDetails",
-                "title": "%AWS.command.showErrorDetails%",
+                "title": "bee",
                 "category": "AWS"
             }
         ]
@@ -242,27 +43,17 @@
         "compile": "tsc -p ./ && npm run lint && npm run bundleDeps",
         "watch": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./test-scripts/test.js",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test",
         "lint": "tslint --project .",
         "package": "vsce package",
         "install-plugin": "vsce package -o aws-toolkit-vscode-test.vsix && code --install-extension aws-toolkit-vscode-test.vsix"
     },
     "devDependencies": {
-        "@types/async-lock": "^1.1.0",
-        "@types/cross-spawn": "^6.0.0",
-        "@types/del": "^3.0.1",
         "@types/fs-extra": "^5.0.4",
         "@types/glob": "^7.1.1",
-        "@types/handlebars": "^4.0.39",
-        "@types/js-yaml": "^3.12.0",
-        "@types/lodash": "^4.14.110",
         "@types/mocha": "^2.2.48",
         "@types/node": "^10.12.12",
-        "@types/opn": "^5.1.0",
         "@types/request": "^2.47.1",
-        "@types/semver": "^5.5.0",
-        "@types/tcp-port-used": "^1.0.0",
-        "@types/xml2js": "^0.4.3",
         "decache": "^4.4.0",
         "glob": "^7.1.3",
         "istanbul": "^0.4.5",
@@ -277,26 +68,12 @@
         "vscode-nls-dev": "^3.2.2"
     },
     "dependencies": {
-        "async-lock": "^1.1.3",
-        "aws-sdk": "^2.317.0",
-        "cloudformation-schema-js-yaml": "^1.0.1",
-        "cross-spawn": "^6.0.5",
-        "del": "^3.0.0",
         "fs-extra": "^6.0.1",
-        "handlebars": "^4.0.12",
-        "immutable": "^4.0.0-rc.12",
-        "js-yaml": "^3.12.0",
-        "jsonc-parser": "^2.0.2",
-        "lodash": "^4.17.10",
         "npm": "^6.4.1",
-        "opn": "^5.4.0",
         "request": "^2.88.0",
         "semver": "^5.6.0",
-        "sleep-promise": "^8.0.1",
-        "tcp-port-used": "^1.0.1",
         "typescript": "^3.1.3",
         "vscode-nls": "^3.2.4",
-        "vue": "^2.5.16",
-        "xml2js": "^0.4.19"
+        "vue": "^2.5.16"
     }
 }

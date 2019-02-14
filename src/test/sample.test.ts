@@ -5,8 +5,10 @@
 
 'use strict'
 
-export class RegionInfo {
+describe('bee', async () => {
 
-    public constructor(public readonly regionCode: string, public readonly regionName: string) {
-    }
-}
+    it('is a test', async () => {
+        console.log('hi')
+    })
+
+})
