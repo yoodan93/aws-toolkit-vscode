@@ -63,8 +63,8 @@
         "tslint": "^5.11.0",
         "tslint-eslint-rules": "^5.4.0",
         "tslint-no-circular-imports": "^0.6.1",
-        "vsce": "^1.51.1",
-        "vscode": "^1.1.21",
+        "vsce": "^1.57.1",
+        "vscode": "^1.1.29",
         "vscode-nls-dev": "^3.2.2"
     },
     "dependencies": {
