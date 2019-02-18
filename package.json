@@ -1,5 +1,5 @@
 {
-    "name": "test-extension",
+    "name": "aws-toolkit-vscode",
     "displayName": "Test extension deployment",
     "description": "temporary extension for testing marketplace deployments",
     "version": "0.0.1",
