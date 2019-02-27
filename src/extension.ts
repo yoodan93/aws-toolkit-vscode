@@ -5,6 +5,7 @@
 
 'use strict'
 
+import * as path from 'path'
 import * as vscode from 'vscode'
 import * as nls from 'vscode-nls'
 
@@ -100,6 +101,98 @@ export async function activate(context: vscode.ExtensionContext) {
     await ExtensionDisposableFiles.initialize(context)
 
     await resumeCreateNewSamApp(context)
+
+    vscode.commands.registerCommand(
+        'aws.prototype.prepare.debug.session',
+        async (arg) => {
+            if (arg.launchType === 'node') {
+                const workspaceFolders = vscode.workspace.workspaceFolders || []
+                const chosenTemplate = await vscode.window.showQuickPick(
+                    await getTemplateChoices(detectLocalTemplates, ...workspaceFolders.map(x => x.uri)),
+                    {
+                        placeHolder: 'Which template do you want to debug'
+                    }
+                )
+
+                console.log(`debug: chose template: ${chosenTemplate ? chosenTemplate.label : chosenTemplate}`)
+                if (!chosenTemplate) { return }
+
+                await context.globalState.update('DEBUG_SESSION_SAM_TEMPLATE', chosenTemplate.label)
+                const eventFilename = path.join(path.dirname(chosenTemplate.label), 'events.json')
+                console.log(`debug: eventFilename: ${eventFilename}`)
+                await context.globalState.update('DEBUG_SESSION_EVENT_FILE', eventFilename)
+
+                // const resourceName = context.globalState.get<string>('DEBUG_SESSION_SAM_RESOURCE_NAME')
+                const template = await CloudFormation.load(chosenTemplate.label)
+
+                if (!template.Resources) { return }
+
+                const resourceNames = Object.getOwnPropertyNames(template.Resources)
+                    .filter(resourceName => template.Resources![resourceName].Type === 'AWS::Serverless::Function')
+
+                if (resourceNames.length === 0) { return }
+
+                const chosenResourceName = await vscode.window.showQuickPick(
+                    resourceNames,
+                    {
+                        placeHolder: 'Which template do you want to debug'
+                    }
+                )
+
+                console.log(`debug: chose resource name: ${chosenResourceName}`)
+                if (!chosenResourceName) { return }
+
+                await context.globalState.update('DEBUG_SESSION_SAM_RESOURCE_NAME', chosenResourceName)
+            }
+
+            return ''
+        }
+    )
+
+    vscode.commands.registerCommand(
+        'aws.prototype.retrieve.debug.setting',
+        async (arg) => {
+            switch (arg.get) {
+                case 'resourceName':
+                    const resourceName = await context.globalState.get<string>('DEBUG_SESSION_SAM_RESOURCE_NAME')
+                    console.log(`Getting DEBUG_SESSION_SAM_RESOURCE_NAME: ${resourceName}`)
+
+                    return resourceName
+                    break
+                case 'samTemplate':
+                    const template = await context.globalState.get<string>('DEBUG_SESSION_SAM_TEMPLATE')
+                    console.log(`Getting DEBUG_SESSION_SAM_TEMPLATE: ${template}`)
+
+                    return template
+                    break
+                case 'eventFile':
+                    const eventFile = await context.globalState.get<string>('DEBUG_SESSION_EVENT_FILE')
+                    console.log(`Getting DEBUG_SESSION_EVENT_FILE: ${eventFile}`)
+
+                    return eventFile
+                    break
+            }
+
+            return undefined
+        }
+    )
+}
+
+import { detectLocalTemplates } from './lambda/local/detectLocalTemplates'
+import { CloudFormation } from './shared/cloudformation/cloudformation'
+
+async function getTemplateChoices(
+    onDetectLocalTemplates: typeof detectLocalTemplates = detectLocalTemplates,
+    ...workspaceFolders: vscode.Uri[]
+): Promise<vscode.QuickPickItem[]> {
+    const result: vscode.QuickPickItem[] = []
+    for await (const uri of onDetectLocalTemplates({ workspaceUris: workspaceFolders })) {
+        result.push({
+            label: uri.fsPath
+        })
+    }
+
+    return result
 }
 
 export function deactivate() {
