@@ -135,7 +135,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 const chosenResourceName = await vscode.window.showQuickPick(
                     resourceNames,
                     {
-                        placeHolder: 'Which template do you want to debug'
+                        placeHolder: 'Which template resource do you want to debug'
                     }
                 )
 
