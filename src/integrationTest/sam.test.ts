@@ -26,9 +26,11 @@ const runtimes = [
 
 async function openSamProject(projectPath: string): Promise<vscode.Uri> {
     const documentPath = path.join(projectFolder, projectPath)
-    await vscode.workspace.openTextDocument(documentPath)
+    const document = await vscode.workspace.openTextDocument(documentPath)
 
-    return vscode.Uri.file(documentPath)
+    console.log(readFileSync(document.uri.fsPath).toString())
+
+    return document.uri
 }
 
 function tryRemoveProjectFolder() {
@@ -42,12 +44,11 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
         try {
             // this works without a sleep locally, but not on CodeBuild. For some reason, it actaully
             // overwhelms the instance of VSCode and this never completes
-            await sleep(200)
+            await sleep(1000)
             let codeLenses: vscode.CodeLens[] | undefined = await vscode.commands.executeCommand(
                 'vscode.executeCodeLensProvider',
                 documentUri
             )
-            console.log(documentUri)
             if (!codeLenses) {
                 continue
             }
@@ -64,7 +65,7 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
 async function getCodeLensesOrTimeout(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
     const codeLensPromise = getCodeLenses(documentUri)
     const timeout = new Promise(resolve => {
-        setTimeout(resolve, 10000, undefined)
+        setTimeout(resolve, 15000, undefined)
     })
     const result = await Promise.race([codeLensPromise, timeout])
 
@@ -99,6 +100,7 @@ function validateRunResult(runResult: any | undefined, projectSDK: string, debug
     const metadata = datum.metadata!
     assert.strictEqual(metadata.get('runtime'), projectSDK)
     assert.strictEqual(metadata.get('debug'), debug)
+    // tslint:enable: no-unsafe-any
 }
 
 // Iterate through and test all runtimes
