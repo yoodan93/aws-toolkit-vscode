@@ -16,7 +16,8 @@ import { activateExtension, sleep, TIMEOUT } from './integrationTestsUtilities'
 const projectFolder = `${__dirname}`
 
 const runtimes = [
-    /*{ name: 'nodejs8.10', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
+    { name: 'nodejs8.10', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
+    /*
     { name: 'nodejs10.x', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
     { name: 'python2.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
     { name: 'python3.6', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
@@ -28,8 +29,6 @@ async function openSamProject(projectPath: string): Promise<vscode.Uri> {
     const documentPath = path.join(projectFolder, projectPath)
     const document = await vscode.workspace.openTextDocument(documentPath)
 
-    console.log(readFileSync(document.uri.fsPath).toString())
-
     return document.uri
 }
 
@@ -40,15 +39,16 @@ function tryRemoveProjectFolder() {
 }
 
 async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
+    let codeLenses: vscode.CodeLens[] | undefined
     while (true) {
         try {
-            // this works without a sleep locally, but not on CodeBuild. For some reason, it actaully
-            // overwhelms the instance of VSCode and this never completes
-            await sleep(1000)
-            let codeLenses: vscode.CodeLens[] | undefined = await vscode.commands.executeCommand(
+            // this works without a sleep locally, but not on CodeBuild
+            await sleep(200)
+            const codeLensesPromise: Thenable<vscode.CodeLens[] | undefined> = vscode.commands.executeCommand(
                 'vscode.executeCodeLensProvider',
                 documentUri
             )
+            codeLenses = await codeLensesPromise
             if (!codeLenses) {
                 continue
             }
@@ -65,7 +65,7 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
 async function getCodeLensesOrTimeout(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
     const codeLensPromise = getCodeLenses(documentUri)
     const timeout = new Promise(resolve => {
-        setTimeout(resolve, 15000, undefined)
+        setTimeout(resolve, 10000, undefined)
     })
     const result = await Promise.race([codeLensPromise, timeout])
 
