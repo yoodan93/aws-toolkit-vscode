@@ -42,18 +42,21 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
         try {
             // this works without a sleep locally, but not on CodeBuild. For some reason, it actaully
             // overwhelms the instance of VSCode and this never completes
-            await sleep(200)
-            const codeLensesPromise: Thenable<vscode.CodeLens[] | undefined> = vscode.commands.executeCommand(
+            await sleep(400)
+            let codeLenses: vscode.CodeLens[] | undefined = await vscode.commands.executeCommand(
                 'vscode.executeCodeLensProvider',
                 documentUri
             )
-            let codeLenses = await codeLensesPromise
             if (!codeLenses) {
+                console.log('codlesnes null')
+
                 continue
             }
             // omnisharp spits out some undefined code lenses for some reason, we filter them because they are
             // not shown to the user and do not affect how our extension is working
+            console.log(`codlesnes of length ${codeLenses.length}`)
             codeLenses = codeLenses.filter(lens => lens !== undefined && lens.command !== undefined)
+            console.log(`codlesnes of length after filter ${codeLenses.length}`)
             if (codeLenses.length === 3) {
                 return codeLenses as vscode.CodeLens[]
             }
@@ -64,7 +67,7 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
 async function getCodeLensesOrTimeout(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
     const codeLensPromise = getCodeLenses(documentUri)
     const timeout = new Promise(resolve => {
-        setTimeout(resolve, 10000, undefined)
+        setTimeout(resolve, 12000, undefined)
     })
     const result = await Promise.race([codeLensPromise, timeout])
 
