@@ -17,11 +17,10 @@ const projectFolder = `${__dirname}`
 
 const runtimes = [
     { name: 'nodejs8.10', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
-    /*
     { name: 'nodejs10.x', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
     { name: 'python2.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
     { name: 'python3.6', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
-    { name: 'python3.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },*/
+    { name: 'python3.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
     { name: 'dotnetcore2.1', path: 'testProject/src/HelloWorld/Function.cs', debuggerType: 'coreclr' }
 ]
 
@@ -39,17 +38,15 @@ function tryRemoveProjectFolder() {
 }
 
 async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
-    let codeLenses: vscode.CodeLens[] | undefined
     while (true) {
         try {
             // this works without a sleep locally, but not on CodeBuild
             await sleep(200)
-            const codeLensesPromise: Thenable<vscode.CodeLens[] | undefined> = vscode.commands.executeCommand(
+            let codeLenses: vscode.CodeLens[] | undefined = await vscode.commands.executeCommand(
                 'vscode.executeCodeLensProvider',
                 documentUri
             )
-            codeLenses = await codeLensesPromise
-            if (!codeLenses) {
+            if (!codeLenses || codeLenses.length === 0) {
                 continue
             }
             // omnisharp spits out some undefined code lenses for some reason, we filter them because they are
