@@ -16,11 +16,11 @@ import { activateExtension, sleep, TIMEOUT } from './integrationTestsUtilities'
 const projectFolder = `${__dirname}`
 
 const runtimes = [
-    { name: 'nodejs8.10', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
+    /*{ name: 'nodejs8.10', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
     { name: 'nodejs10.x', path: 'testProject/hello-world/app.js', debuggerType: 'node2' },
     { name: 'python2.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
     { name: 'python3.6', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
-    { name: 'python3.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },
+    { name: 'python3.7', path: 'testProject/hello_world/app.py', debuggerType: 'python' },*/
     { name: 'dotnetcore2.1', path: 'testProject/src/HelloWorld/Function.cs', debuggerType: 'coreclr' }
 ]
 
@@ -63,14 +63,14 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
 async function getCodeLensesOrTimeout(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
     const codeLensPromise = getCodeLenses(documentUri)
     const timeout = new Promise(resolve => {
-        setTimeout(resolve, 10000, undefined)
+        setTimeout(resolve, 15000, undefined)
     })
     const result = await Promise.race([codeLensPromise, timeout])
 
     if (result) {
         return result as vscode.CodeLens[]
     }
-    throw new Error('Codelenses took too long to show up, this inidicates an issue!')
+    throw new Error('Codelenses took too long to show up!')
 }
 
 async function onDebugChanged(e: vscode.DebugSession | undefined, debuggerType: string) {
