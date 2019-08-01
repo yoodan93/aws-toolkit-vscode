@@ -42,11 +42,12 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
         try {
             // this works without a sleep locally, but not on CodeBuild. For some reason, it actaully
             // overwhelms the instance of VSCode and this never completes
-            await sleep(500)
+            await sleep(200)
             let codeLenses: vscode.CodeLens[] | undefined = await vscode.commands.executeCommand(
                 'vscode.executeCodeLensProvider',
                 documentUri
             )
+            console.log(documentUri)
             if (!codeLenses) {
                 continue
             }
