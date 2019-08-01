@@ -26,9 +26,9 @@ const runtimes = [
 
 async function openSamProject(projectPath: string): Promise<vscode.Uri> {
     const documentPath = path.join(projectFolder, projectPath)
-    const document = await vscode.workspace.openTextDocument(documentPath)
+    await vscode.workspace.openTextDocument(documentPath)
 
-    return document.uri
+    return vscode.Uri.file(documentPath)
 }
 
 function tryRemoveProjectFolder() {
@@ -52,9 +52,7 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
             }
             // omnisharp spits out some undefined code lenses for some reason, we filter them because they are
             // not shown to the user and do not affect how our extension is working
-            console.log(`codlesnes of length ${codeLenses.length}`)
             codeLenses = codeLenses.filter(lens => lens !== undefined && lens.command !== undefined)
-            console.log(`codlesnes of length after filter ${codeLenses.length}`)
             if (codeLenses.length === 3) {
                 return codeLenses as vscode.CodeLens[]
             }
@@ -64,9 +62,8 @@ async function getCodeLenses(documentUri: vscode.Uri): Promise<vscode.CodeLens[]
 
 async function getCodeLensesOrTimeout(documentUri: vscode.Uri): Promise<vscode.CodeLens[]> {
     const codeLensPromise = getCodeLenses(documentUri)
-    // This might seem like a very high timeout, and it is, but it is for CodeBuild
     const timeout = new Promise(resolve => {
-        setTimeout(resolve, 20000, undefined)
+        setTimeout(resolve, 10000, undefined)
     })
     const result = await Promise.race([codeLensPromise, timeout])
 
