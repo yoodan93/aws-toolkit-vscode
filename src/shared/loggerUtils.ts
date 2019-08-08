@@ -25,6 +25,7 @@ export class TestLogger {
     // cleanupLogger clears out the logger's transports, but the logger will still exist as a default
     // this means that the default logger will still work for other files but will output an error
     public async cleanupLogger(): Promise<void> {
+        console.log(`*** LOG Cleanup on ${this.logFolder}`)
         this.logger.releaseLogger()
         if (await filesystemUtilities.fileExists(this.logFolder)) {
             await del(this.logFolder, { force: true })
@@ -39,6 +40,7 @@ export class TestLogger {
 
     public static async createTestLogger(): Promise<TestLogger> {
         const logFolder = await filesystemUtilities.makeTemporaryToolkitFolder()
+        console.log(`*** TESTLOG Create on ${logFolder}`)
         const logger = await l.initialize({
             logPath: TestLogger.getLogPath(logFolder),
             logLevel: 'debug'
