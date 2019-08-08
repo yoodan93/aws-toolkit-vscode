@@ -34,6 +34,7 @@ export class TestLogger {
 
     public async logContainsText(str: string): Promise<boolean> {
         const logText = await filesystemUtilities.readFileAsString(TestLogger.getLogPath(this.logFolder))
+        console.log(`*** LOG TEXT CHECK. Log is: ${logText}`)
 
         return logText.includes(str)
     }
