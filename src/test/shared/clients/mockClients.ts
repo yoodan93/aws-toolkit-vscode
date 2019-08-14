@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CloudFormation, Lambda, STS } from 'aws-sdk'
+import { CloudFormation, ECS, Lambda, STS } from 'aws-sdk'
 import { CloudFormationClient } from '../../../shared/clients/cloudFormationClient'
 import { EcsClient } from '../../../shared/clients/ecsClient'
 import { LambdaClient } from '../../../shared/clients/lambdaClient'
@@ -68,22 +68,40 @@ export class MockEcsClient implements EcsClient {
     public readonly listClusters: () => AsyncIterableIterator<string>
     public readonly listServices: (cluster: string) => AsyncIterableIterator<string>
     public readonly listTaskDefinitions: () => AsyncIterableIterator<string>
+    public readonly describeClusters: (arns: string[]) => Promise<ECS.DescribeClustersResponse>
+    public readonly describeServices: (cluster: string, arns: string[]) => Promise<ECS.DescribeServicesResponse>
+    public readonly describeTaskDefinition: (arn: string) => Promise<ECS.DescribeTaskDefinitionResponse>
 
     public constructor({
         regionCode = '',
         listClusters = () => asyncGenerator([]),
         listServices = (cluster: string) => asyncGenerator([]),
-        listTaskDefinitions = () => asyncGenerator([])
+        listTaskDefinitions = () => asyncGenerator([]),
+        describeClusters = async (arns: string[]) => (
+            { } as any as ECS.DescribeClustersResponse
+        ),
+        describeServices = async (cluster: string, arns: string[]) => (
+            { } as any as ECS.DescribeServicesResponse
+        ),
+        describeTaskDefinition = async (arn: string) => (
+            { } as any as ECS.DescribeTaskDefinitionResponse
+        )
     }: {
         regionCode?: string
         listClusters?(): AsyncIterableIterator<string>
         listServices?(cluster: string): AsyncIterableIterator<string>
         listTaskDefinitions?(): AsyncIterableIterator<string>
+        describeClusters?(arns: string[]): Promise<ECS.DescribeClustersResponse>
+        describeServices?(cluster: string, arns: string[]): Promise<ECS.DescribeServicesResponse>
+        describeTaskDefinition?(arn: string): Promise<ECS.DescribeTaskDefinitionResponse>
     }) {
         this.regionCode = regionCode
         this.listClusters = listClusters
         this.listServices = listServices
         this.listTaskDefinitions = listTaskDefinitions
+        this.describeClusters = describeClusters
+        this.describeServices = describeServices
+        this.describeTaskDefinition = describeTaskDefinition
     }
 }
 

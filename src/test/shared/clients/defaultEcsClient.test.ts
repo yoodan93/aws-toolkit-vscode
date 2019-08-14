@@ -171,6 +171,33 @@ describe('defaultEcsClient', async () => {
             })
         })
     })
+
+    describe('describeClusters', async () => {
+
+        // it('lists clusters', async () => {
+        //     const targetArr = ['arn1', 'arn2', 'arn3']
+        //     testClient.listTaskDefinitionsResponses = [{
+        //         taskDefinitionArns: targetArr
+        //     }]
+        //     const iterator = testClient.listTaskDefinitions()
+        //     const arr = []
+        //     for await (const item of iterator) {
+        //         arr.push(item)
+        //     }
+        //     assert.deepStrictEqual(targetArr, arr)
+        // })
+
+        it('handles errors', async () => {
+            testClient.listTaskDefinitionsResponses = new Error() as AWSError
+            await assertThrowsError(async () => {
+                const iterator = testClient.listTaskDefinitions()
+                const arr = []
+                for await (const item of iterator) {
+                    arr.push(item)
+                }
+            })
+        })
+    })
 })
 
 class TestEcsClient extends DefaultEcsClient {
@@ -180,6 +207,12 @@ class TestEcsClient extends DefaultEcsClient {
     public listServicesResponses: ECS.ListServicesResponse[] | AWSError = [{}]
 
     public listTaskDefinitionsResponses: ECS.ListTaskDefinitionsResponse[] | AWSError = [{}]
+
+    public describeClustersResponse: ECS.DescribeClustersResponse | AWSError = {}
+
+    public describeServicesResponse: ECS.DescribeServicesResponse | AWSError = {}
+
+    public describeTaskDefinitionResponse: ECS.DescribeTaskDefinitionResponse | AWSError = {}
 
     private pageNum: number = 0
 
@@ -217,6 +250,39 @@ class TestEcsClient extends DefaultEcsClient {
         : Promise<ECS.ListTaskDefinitionsResponse> {
         const responseDatum =
             this.getResponseDatum<ECS.ListTaskDefinitionsResponse>(this.listTaskDefinitionsResponses, request.nextToken)
+
+        if (responseDatum instanceof Error) {
+            throw responseDatum
+        } else {
+            return responseDatum
+        }
+    }
+
+    protected async invokeDescribeClusters(request: ECS.DescribeClustersRequest)
+        : Promise<ECS.DescribeClustersResponse> {
+        const responseDatum = this.describeClustersResponse
+
+        if (responseDatum instanceof Error) {
+            throw responseDatum
+        } else {
+            return responseDatum
+        }
+    }
+
+    protected async invokeDescribeServices(request: ECS.DescribeServicesRequest)
+        : Promise<ECS.DescribeServicesResponse> {
+        const responseDatum = this.describeServicesResponse
+
+        if (responseDatum instanceof Error) {
+            throw responseDatum
+        } else {
+            return responseDatum
+        }
+    }
+
+    protected async invokeDescribeTaskDefinition(request: ECS.DescribeTaskDefinitionRequest)
+        : Promise<ECS.DescribeTaskDefinitionResponse> {
+        const responseDatum = this.describeTaskDefinitionResponse
 
         if (responseDatum instanceof Error) {
             throw responseDatum

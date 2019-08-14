@@ -25,6 +25,15 @@ export class DefaultEcsClient implements EcsClient {
         } while (request.nextToken)
     }
 
+    public async describeClusters(arns: string[]): Promise<ECS.DescribeClustersResponse> {
+        const sdkClient = await this.createSdkClient()
+        const request: ECS.DescribeClustersRequest = {
+            clusters: arns
+        }
+
+        return await this.invokeDescribeClusters(request, sdkClient)
+    }
+
     public async *listServices(cluster: string): AsyncIterableIterator<string> {
         const sdkClient = await this.createSdkClient()
         const request: ECS.ListServicesRequest = {
@@ -37,6 +46,16 @@ export class DefaultEcsClient implements EcsClient {
             }
             request.nextToken = response.nextToken
         } while (request.nextToken)
+    }
+
+    public async describeServices(cluster: string, serviceArns: string[]): Promise<ECS.DescribeServicesResponse> {
+        const sdkClient = await this.createSdkClient()
+        const request: ECS.DescribeServicesRequest = {
+            cluster,
+            services: serviceArns
+        }
+
+        return await this.invokeDescribeServices(request, sdkClient)
     }
 
     public async *listTaskDefinitions(): AsyncIterableIterator<string> {
@@ -54,9 +73,23 @@ export class DefaultEcsClient implements EcsClient {
         } while (request.nextToken)
     }
 
+    public async describeTaskDefinition(arn: string): Promise<ECS.DescribeTaskDefinitionResponse> {
+        const sdkClient = await this.createSdkClient()
+        const request: ECS.DescribeTaskDefinitionRequest = {
+            taskDefinition: arn
+        }
+
+        return await this.invokeDescribeTaskDefinition(request, sdkClient)
+    }
+
     protected async invokeListClusters(request: ECS.ListClustersRequest, sdkClient: ECS)
         : Promise<ECS.ListClustersResponse> {
         return sdkClient.listClusters(request).promise()
+    }
+
+    protected async invokeDescribeClusters(request: ECS.DescribeClustersRequest, sdkClient: ECS)
+        : Promise<ECS.DescribeClustersResponse> {
+        return sdkClient.describeClusters(request).promise()
     }
 
     protected async invokeListServices(request: ECS.ListServicesRequest, sdkClient: ECS)
@@ -64,9 +97,19 @@ export class DefaultEcsClient implements EcsClient {
         return sdkClient.listServices(request).promise()
     }
 
+    protected async invokeDescribeServices(request: ECS.DescribeServicesRequest, sdkClient: ECS)
+        : Promise<ECS.DescribeServicesResponse> {
+        return sdkClient.describeServices(request).promise()
+    }
+
     protected async invokeListTaskDefinitions(request: ECS.ListTaskDefinitionsRequest, sdkClient: ECS)
         : Promise<ECS.ListTaskDefinitionsResponse> {
         return sdkClient.listTaskDefinitions(request).promise()
+    }
+
+    protected async invokeDescribeTaskDefinition(request: ECS.DescribeTaskDefinitionRequest, sdkClient: ECS)
+        : Promise<ECS.DescribeTaskDefinitionResponse> {
+        return sdkClient.describeTaskDefinition(request).promise()
     }
 
     protected async createSdkClient(): Promise<ECS> {
