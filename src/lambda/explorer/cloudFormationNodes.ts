@@ -57,18 +57,23 @@ export class DefaultCloudFormationNode extends AWSTreeErrorHandlerNode implement
     }
 
     public async updateChildren(): Promise<void> {
-        const client: CloudFormationClient = ext.toolkitClientBuilder.createCloudFormationClient(this.regionCode)
-        const stacks = await toMapAsync(listCloudFormationStacks(client), stack => stack.StackId)
+        const stackIdToStack = await toMapAsync(this.listCloudFormationStacks(), stack => stack.StackId)
 
         updateInPlace(
             this.stackNodes,
-            stacks.keys(),
-            key => this.stackNodes.get(key)!.update(stacks.get(key)!),
+            stackIdToStack.keys(),
+            key => this.stackNodes.get(key)!.update(stackIdToStack.get(key)!),
             key =>
-                new DefaultCloudFormationStackNode(this, stacks.get(key)!, relativeExtensionPath =>
+                new DefaultCloudFormationStackNode(this, stackIdToStack.get(key)!, relativeExtensionPath =>
                     this.getExtensionAbsolutePath(relativeExtensionPath)
                 )
         )
+    }
+
+    protected async *listCloudFormationStacks(): AsyncIterableIterator<CloudFormation.StackSummary> {
+        const client: CloudFormationClient = ext.toolkitClientBuilder.createCloudFormationClient(this.regionCode)
+
+        return listCloudFormationStacks(client)
     }
 }
 

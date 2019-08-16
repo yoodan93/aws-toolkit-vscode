@@ -23,7 +23,6 @@ import { TestLogger } from '../../../shared/loggerUtils'
 import { RegionInfo } from '../../../shared/regions/regionInfo'
 import { ErrorNode } from '../../../shared/treeview/nodes/errorNode'
 import { PlaceholderNode } from '../../../shared/treeview/nodes/placeholderNode'
-import { MockCloudFormationClient } from '../../shared/clients/mockClients'
 
 async function* asyncGenerator<T>(items: T[]): AsyncIterableIterator<T> {
     yield* items
@@ -266,61 +265,36 @@ describe('DefaultCloudFormationNode', () => {
 
     const stubPathResolver = (path: string): string => path
 
-    class StackNamesMockCloudFormationClient extends MockCloudFormationClient {
-        public constructor(
-            public readonly stackNames: string[] = [],
-            listStacks: (statusFilter?: string[]) => AsyncIterableIterator<CloudFormation.StackSummary> = (
-                statusFilter?: string[]
-            ) => {
-                return asyncGenerator<CloudFormation.StackSummary>(
-                    stackNames.map<CloudFormation.StackSummary>(name => {
-                        return {
-                            StackId: name,
-                            StackName: name,
-                            CreationTime: new Date(),
-                            StackStatus: 'CREATE_COMPLETE'
-                        }
-                    })
-                )
-            }
-        ) {
-            super(undefined, undefined, listStacks)
+    class TestDefaultCloudFormationNode extends DefaultCloudFormationNode {
+        public constructor(public existingStackNames: string[]) {
+            super(new DefaultRegionNode(new RegionInfo('code', 'name'), stubPathResolver), stubPathResolver)
+        }
+
+        protected async *listCloudFormationStacks(): AsyncIterableIterator<CloudFormation.StackSummary> {
+            yield* asyncGenerator<CloudFormation.StackSummary>(
+                this.existingStackNames.map<CloudFormation.StackSummary>(name => {
+                    return {
+                        StackId: name,
+                        StackName: name,
+                        CreationTime: new Date(),
+                        StackStatus: 'CREATE_COMPLETE'
+                    }
+                })
+            )
         }
     }
 
     it('Sorts Stacks', async () => {
         const inputStackNames: string[] = ['zebra', 'Antelope', 'aardvark', 'elephant']
 
-        // TODO: Move to MockToolkitClientBuilder
-        ext.toolkitClientBuilder = {
-            createCloudFormationClient(regionCode: string): CloudFormationClient {
-                return new StackNamesMockCloudFormationClient(inputStackNames)
-            },
-
-            createEcsClient(regionCode: string): EcsClient {
-                throw new Error('ecs client unused')
-            },
-
-            createLambdaClient(regionCode: string): LambdaClient {
-                throw new Error('lambda client unused')
-            },
-
-            createStsClient(regionCode: string): StsClient {
-                throw new Error('sts client unused')
-            }
-        }
-
-        const cloudFormationNode = new DefaultCloudFormationNode(
-            new DefaultRegionNode(new RegionInfo('code', 'name'), stubPathResolver),
-            stubPathResolver
-        )
+        const cloudFormationNode = new TestDefaultCloudFormationNode(inputStackNames)
 
         const children = await cloudFormationNode.getChildren()
 
         assert.ok(children, 'Expected to get CloudFormation node children')
         assert.strictEqual(
-            inputStackNames.length,
             children.length,
+            inputStackNames.length,
             `Expected ${inputStackNames.length} CloudFormation children, got ${children.length}`
         )
 
