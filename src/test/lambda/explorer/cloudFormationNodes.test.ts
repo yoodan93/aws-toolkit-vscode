@@ -265,29 +265,29 @@ describe('DefaultCloudFormationNode', () => {
 
     const stubPathResolver = (path: string): string => path
 
-    class TestDefaultCloudFormationNode extends DefaultCloudFormationNode {
-        public constructor(public existingStackNames: string[]) {
-            super(new DefaultRegionNode(new RegionInfo('code', 'name'), stubPathResolver), stubPathResolver)
-        }
-
-        protected async *listCloudFormationStacks(): AsyncIterableIterator<CloudFormation.StackSummary> {
-            yield* asyncGenerator<CloudFormation.StackSummary>(
-                this.existingStackNames.map<CloudFormation.StackSummary>(name => {
-                    return {
-                        StackId: name,
-                        StackName: name,
-                        CreationTime: new Date(),
-                        StackStatus: 'CREATE_COMPLETE'
-                    }
-                })
-            )
-        }
+    async function* makeSampleCloudFormationStacks(
+        stackNames: string[]
+    ): AsyncIterableIterator<CloudFormation.StackSummary> {
+        yield* asyncGenerator<CloudFormation.StackSummary>(
+            stackNames.map<CloudFormation.StackSummary>(name => {
+                return {
+                    StackId: name,
+                    StackName: name,
+                    CreationTime: new Date(),
+                    StackStatus: 'CREATE_COMPLETE'
+                }
+            })
+        )
     }
 
     it('Sorts Stacks', async () => {
         const inputStackNames: string[] = ['zebra', 'Antelope', 'aardvark', 'elephant']
 
-        const cloudFormationNode = new TestDefaultCloudFormationNode(inputStackNames)
+        const cloudFormationNode = new DefaultCloudFormationNode({
+            parent: new DefaultRegionNode(new RegionInfo('code', 'name'), stubPathResolver),
+            getExtensionAbsolutePath: stubPathResolver,
+            getCloudFormationStacks: () => makeSampleCloudFormationStacks(inputStackNames)
+        })
 
         const children = await cloudFormationNode.getChildren()
 

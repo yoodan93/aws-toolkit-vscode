@@ -30,19 +30,40 @@ export interface CloudFormationNode extends AWSTreeErrorHandlerNode {
     updateChildren(): Thenable<void>
 }
 
+async function* invokeListCloudFormationStacks(region: string): AsyncIterableIterator<CloudFormation.StackSummary> {
+    const client: CloudFormationClient = ext.toolkitClientBuilder.createCloudFormationClient(region)
+
+    return listCloudFormationStacks(client)
+}
+
+function invokeExtensionAbsolutePath(relativeExtensionPath: string): string {
+    return ext.context.asAbsolutePath(relativeExtensionPath)
+}
+
 export class DefaultCloudFormationNode extends AWSTreeErrorHandlerNode implements CloudFormationNode {
+    public readonly parent: RegionNode
     private readonly stackNodes: Map<string, CloudFormationStackNode>
+    private readonly getCloudFormationStacks: typeof invokeListCloudFormationStacks
+    private readonly getExtensionAbsolutePath: typeof invokeExtensionAbsolutePath
 
     public get regionCode(): string {
         return this.parent.regionCode
     }
 
-    public constructor(
-        public readonly parent: RegionNode,
-        private readonly getExtensionAbsolutePath: (relativeExtensionPath: string) => string
-    ) {
+    public constructor({
+        getCloudFormationStacks = invokeListCloudFormationStacks,
+        getExtensionAbsolutePath = invokeExtensionAbsolutePath,
+        ...parameters
+    }: {
+        parent: RegionNode
+        getCloudFormationStacks?: typeof invokeListCloudFormationStacks
+        getExtensionAbsolutePath?: typeof invokeExtensionAbsolutePath
+    }) {
         super('CloudFormation', vscode.TreeItemCollapsibleState.Collapsed)
+        this.parent = parameters.parent
         this.stackNodes = new Map<string, CloudFormationStackNode>()
+        this.getCloudFormationStacks = getCloudFormationStacks
+        this.getExtensionAbsolutePath = getExtensionAbsolutePath
     }
 
     public async getChildren(): Promise<(CloudFormationStackNode | ErrorNode)[]> {
@@ -57,7 +78,7 @@ export class DefaultCloudFormationNode extends AWSTreeErrorHandlerNode implement
     }
 
     public async updateChildren(): Promise<void> {
-        const stackIdToStack = await toMapAsync(this.listCloudFormationStacks(), stack => stack.StackId)
+        const stackIdToStack = await toMapAsync(this.getCloudFormationStacks(this.regionCode), stack => stack.StackId)
 
         updateInPlace(
             this.stackNodes,
@@ -68,12 +89,6 @@ export class DefaultCloudFormationNode extends AWSTreeErrorHandlerNode implement
                     this.getExtensionAbsolutePath(relativeExtensionPath)
                 )
         )
-    }
-
-    protected async *listCloudFormationStacks(): AsyncIterableIterator<CloudFormation.StackSummary> {
-        const client: CloudFormationClient = ext.toolkitClientBuilder.createCloudFormationClient(this.regionCode)
-
-        return listCloudFormationStacks(client)
     }
 }
 
