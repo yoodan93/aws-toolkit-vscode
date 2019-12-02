@@ -70,7 +70,7 @@ export async function findFileInParentPaths(searchFolder: string, fileToFind: st
 }
 
 const mkdtemp = promisify(fs.mkdtemp)
-export const makeTemporaryToolkitFolder = async (...relativePathParts: string[]) => {
+export async function makeTemporaryToolkitFolder(...relativePathParts: string[]): Promise<string> {
     const _relativePathParts = relativePathParts || []
     if (_relativePathParts.length === 0) {
         _relativePathParts.push('vsctk')
@@ -84,5 +84,5 @@ export const makeTemporaryToolkitFolder = async (...relativePathParts: string[])
         await mkdir(tmpPathParent, { recursive: true })
     }
 
-    return mkdtemp(tmpPath)
+    return await mkdtemp(tmpPath)
 }
