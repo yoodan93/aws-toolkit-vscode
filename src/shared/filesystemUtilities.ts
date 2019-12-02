@@ -23,7 +23,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
         await access(filePath)
         console.log(`*** fileExists: YES ${filePath}`)
     } catch (err) {
-        console.log(`*** fileExists: err ${err}`)
+        console.log('*** fileExists: NO')
 
         return false
     }
