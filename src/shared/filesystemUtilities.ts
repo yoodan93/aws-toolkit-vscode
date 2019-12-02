@@ -19,9 +19,22 @@ export const tempDirPath = path.join(
 
 export async function fileExists(filePath: string): Promise<boolean> {
     try {
-        console.log(`*** fileExists: ${filePath}`)
         await access(filePath)
     } catch (err) {
+        return false
+    }
+
+    return true
+}
+
+async function fileExistsInner(filePath: string): Promise<boolean> {
+    try {
+        console.log(`*** fileExists: ${filePath}`)
+        await access(filePath)
+        console.log(`*** fileExists: YES ${filePath}`)
+    } catch (err) {
+        console.log(`*** fileExists: err ${err}`)
+
         return false
     }
 
@@ -83,7 +96,7 @@ export async function makeTemporaryToolkitFolder(...relativePathParts: string[])
     console.log(`*** makeTemporaryToolkitFolder parent is: ${tmpPathParent}`)
     // fs.makeTemporaryToolkitFolder fails on OSX if prefix contains path separator
     // so we must create intermediate dirs if needed
-    if (!(await fileExists(tmpPathParent))) {
+    if (!(await fileExistsInner(tmpPathParent))) {
         console.log(`*** makeTemporaryToolkitFolder: ${tmpPathParent} did not exist`)
         await mkdir(tmpPathParent, { recursive: true })
         console.log(`*** makeTemporaryToolkitFolder: parent ${tmpPathParent} created`)
