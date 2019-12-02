@@ -84,5 +84,5 @@ export async function makeTemporaryToolkitFolder(...relativePathParts: string[])
         await mkdir(tmpPathParent, { recursive: true })
     }
 
-    return await mkdtemp(tmpPath)
+    return mkdtemp(tmpPath)
 }
