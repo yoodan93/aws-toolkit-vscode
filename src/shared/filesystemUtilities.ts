@@ -77,11 +77,15 @@ export async function makeTemporaryToolkitFolder(...relativePathParts: string[])
     }
 
     const tmpPath = path.join(tempDirPath, ..._relativePathParts)
+    console.log(`*** makeTemporaryToolkitFolder: ${tmpPath}`)
     const tmpPathParent = path.dirname(tmpPath)
+    console.log(`*** makeTemporaryToolkitFolder parent is: ${tmpPathParent}`)
     // fs.makeTemporaryToolkitFolder fails on OSX if prefix contains path separator
     // so we must create intermediate dirs if needed
     if (!(await fileExists(tmpPathParent))) {
+        console.log(`*** makeTemporaryToolkitFolder: ${tmpPathParent} did not exist`)
         await mkdir(tmpPathParent, { recursive: true })
+        console.log(`*** makeTemporaryToolkitFolder: parent ${tmpPathParent} created`)
     }
 
     return mkdtemp(tmpPath)
