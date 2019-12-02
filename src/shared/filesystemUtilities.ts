@@ -88,5 +88,11 @@ export async function makeTemporaryToolkitFolder(...relativePathParts: string[])
         console.log(`*** makeTemporaryToolkitFolder: parent ${tmpPathParent} created`)
     }
 
-    return mkdtemp(tmpPath)
+    console.log(`*** makeTemporaryToolkitFolder: now making for ${tmpPath}`)
+
+    return mkdtemp(tmpPath).then(x => {
+        console.log(`*** makeTemporaryToolkitFolder: created ${x}`)
+
+        return x
+    })
 }
