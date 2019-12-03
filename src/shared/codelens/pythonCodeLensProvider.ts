@@ -60,6 +60,7 @@ async function getLambdaHandlerCandidates({
     // const PYTHON_JEDI_ENABLED_KEY = 'jediEnabled'
     // const RETRY_INTERVAL_MS = 1000
     // const MAX_RETRIES = 10
+    // Test
 
     const logger = getLogger()
     const filename = uri.fsPath
