@@ -57,14 +57,14 @@ async function getLambdaHandlerCandidates({
     uri: vscode.Uri
     pythonSettings: SettingsConfiguration
 }): Promise<LambdaHandlerCandidate[]> {
-    const PYTHON_JEDI_ENABLED_KEY = 'jediEnabled'
-    const RETRY_INTERVAL_MS = 1000
-    const MAX_RETRIES = 10
+    // const PYTHON_JEDI_ENABLED_KEY = 'jediEnabled'
+    // const RETRY_INTERVAL_MS = 1000
+    // const MAX_RETRIES = 10
 
     const logger = getLogger()
     const filename = uri.fsPath
 
-    let symbols: vscode.DocumentSymbol[] =
+    const symbols: vscode.DocumentSymbol[] =
         (await vscode.commands.executeCommand<vscode.DocumentSymbol[]>('vscode.executeDocumentSymbolProvider', uri)) ||
         []
 
@@ -78,17 +78,17 @@ async function getLambdaHandlerCandidates({
     // TODO: When the above issue is resolved, remove this workaround AND bump the minimum
     //       required VS Code version and/or add a minimum supported version for the Python
     //       extension.
-    const jediEnabled = pythonSettings.readSetting<boolean>(PYTHON_JEDI_ENABLED_KEY, true)
-    if (jediEnabled) {
-        for (let i = 0; i < MAX_RETRIES && !symbols.length; i++) {
-            await new Promise<void>(resolve => setTimeout(resolve, RETRY_INTERVAL_MS))
-            symbols =
-                (await vscode.commands.executeCommand<vscode.DocumentSymbol[]>(
-                    'vscode.executeDocumentSymbolProvider',
-                    uri
-                )) || []
-        }
-    }
+    // const jediEnabled = pythonSettings.readSetting<boolean>(PYTHON_JEDI_ENABLED_KEY, true)
+    // if (jediEnabled) {
+    //     for (let i = 0; i < MAX_RETRIES && !symbols.length; i++) {
+    //         await new Promise<void>(resolve => setTimeout(resolve, RETRY_INTERVAL_MS))
+    //         symbols =
+    //             (await vscode.commands.executeCommand<vscode.DocumentSymbol[]>(
+    //                 'vscode.executeDocumentSymbolProvider',
+    //                 uri
+    //             )) || []
+    //     }
+    // }
 
     return symbols
         .filter(sym => sym.kind === vscode.SymbolKind.Function)
