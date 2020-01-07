@@ -8,7 +8,7 @@
 import * as vscode from 'vscode'
 import { RefreshableAwsTreeProvider } from '../../shared/treeview/awsTreeProvider'
 import { AWSTreeNodeBase } from '../../shared/treeview/nodes/awsTreeNodeBase'
-import { localize } from '../../shared/utilities/vsCodeUtils'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import { detectCdkProjects } from './detectCdkProjects'
 import { AppNode } from './nodes/appNode'
 import { CdkErrorNode } from './nodes/errorNode'
@@ -39,7 +39,7 @@ export class AwsCdkExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>,
             const appsFound = await detectCdkProjects(vscode.workspace.workspaceFolders)
 
             if (appsFound.length === 0) {
-                return [new CdkErrorNode(localize('Aws.cdk.explorerNode.noApps', '[No CDK Apps found in Workspaces]'))]
+                return [new CdkErrorNode(getLocalizedText(LocalizedIds.CDK.ExplorerNode.NoApps))]
             }
 
             return appsFound.map(appLocation => new AppNode(appLocation))

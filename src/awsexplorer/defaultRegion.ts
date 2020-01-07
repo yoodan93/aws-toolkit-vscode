@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
+import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 import * as vscode from 'vscode'
 import { AwsContext } from '../shared/awsContext'
@@ -34,16 +33,10 @@ enum OnDefaultRegionMissingOperation {
 }
 
 class DefaultRegionMissingPromptItems {
-    public static readonly add: string = localize('AWS.message.prompt.defaultRegionHidden.add', 'Yes')
-    public static readonly alwaysAdd: string = localize(
-        'AWS.message.prompt.defaultRegionHidden.alwaysAdd',
-        "Yes, and don't ask again"
-    )
-    public static readonly ignore: string = localize('AWS.message.prompt.defaultRegionHidden.ignore', 'No')
-    public static readonly alwaysIgnore: string = localize(
-        'AWS.message.prompt.defaultRegionHidden.alwaysIgnore',
-        "No, and don't ask again"
-    )
+    public static readonly add: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.Add)
+    public static readonly alwaysAdd: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.AlwaysAdd)
+    public static readonly ignore: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.Ignore)
+    public static readonly alwaysIgnore: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.AlwaysIgnore)
 }
 
 export async function checkExplorerForDefaultRegion(
@@ -90,12 +83,7 @@ export async function checkExplorerForDefaultRegion(
             DefaultRegionMissingPromptItems.alwaysIgnore
         ],
         {
-            placeHolder: localize(
-                'AWS.message.prompt.defaultRegionHidden',
-                // prettier-ignore
-                "This profile's default region ({0}) is currently hidden. Would you like to show it in the Explorer?",
-                profileRegion
-            )
+            placeHolder: getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.CurrentlyHidden, profileRegion)
         }
     )
 
@@ -122,12 +110,7 @@ export async function checkExplorerForDefaultRegion(
                     : OnDefaultRegionMissingOperation.Ignore
             await config.update('onDefaultRegionMissing', action, vscode.ConfigurationTarget.Global)
             vscode.window.showInformationMessage(
-                localize(
-                    'AWS.message.prompt.defaultRegionHidden.suppressed',
-                    // prettier-ignore
-                    "You will no longer be asked what to do when the current profile's default region is hidden from the Explorer. This behavior can be changed by modifying the '{0}' setting.",
-                    'aws.onDefaultRegionMissing'
-                )
+                getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.Suppressed, 'aws.onDefaultRegionMissing')
             )
             break
     }

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 import * as vscode from 'vscode'
 import { AwsContext } from '../shared/awsContext'
 import { RegionProvider } from '../shared/regions/regionProvider'
@@ -10,7 +11,6 @@ import { RefreshableAwsTreeProvider } from '../shared/treeview/awsTreeProvider'
 import { AWSCommandTreeNode } from '../shared/treeview/nodes/awsCommandTreeNode'
 import { AWSTreeNodeBase } from '../shared/treeview/nodes/awsTreeNodeBase'
 import { intersection, toMap, updateInPlace } from '../shared/utilities/collectionUtils'
-import { localize } from '../shared/utilities/vsCodeUtils'
 import { RegionNode } from './regionNode'
 
 export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, RefreshableAwsTreeProvider {
@@ -37,9 +37,7 @@ export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, Re
                 return [
                     new AWSCommandTreeNode(
                         element,
-                        localize(
-                            'AWS.explorerNode.lambda.retry',
-                            'Unable to load Lambda Functions, click here to retry'
+                        getLocalizedText(LocalizedIds.ExplorerNode.Lambda.Retry
                         ),
                         'aws.refreshAwsExplorerNode',
                         [this, element]
@@ -53,10 +51,10 @@ export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, Re
             return [
                 new AWSCommandTreeNode(
                     undefined,
-                    localize('AWS.explorerNode.signIn', 'Connect to AWS...'),
+                    getLocalizedText(LocalizedIds.ExplorerNode.SignIn),
                     'aws.login',
                     undefined,
-                    localize('AWS.explorerNode.signIn.tooltip', 'Connect to AWS using a credential profile')
+                    getLocalizedText(LocalizedIds.ExplorerNode.SignInTooltip)
                 )
             ]
         }
@@ -77,10 +75,10 @@ export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, Re
             return [
                 new AWSCommandTreeNode(
                     undefined,
-                    localize('AWS.explorerNode.addRegion', 'Click to add a region to view functions...'),
+                    getLocalizedText(LocalizedIds.ExplorerNode.AddRegion),
                     'aws.showRegion',
                     undefined,
-                    localize('AWS.explorerNode.addRegion.tooltip', 'Configure a region to show available functions')
+                    getLocalizedText(LocalizedIds.ExplorerNode.AddRegionTooltip)
                 )
             ]
         }

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
 import { Schemas } from 'aws-sdk'
 import fs = require('fs')
 import path = require('path')
@@ -15,6 +13,7 @@ import { getLogger, Logger } from '../../shared/logger'
 import { ExtensionDisposableFiles } from '../../shared/utilities/disposableFiles'
 import { SchemaItemNode } from '../explorer/schemaItemNode'
 import { getLanguageDetails } from '../models/schemaCodeLangs'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 import {
     DefaultSchemaCodeDownloadWizardContext,
@@ -45,11 +44,7 @@ export async function downloadSchemaItemCode(node: SchemaItemNode) {
         }
 
         vscode.window.showInformationMessage(
-            localize(
-                'AWS.message.info.schemas.downloadCodeBindings.start',
-                'Downloading code for schema {0}...',
-                node.schemaName
-            )
+            getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Start, node.schemaName)
         )
 
         const coreFileName = getCoreFileName(node.schemaName, getLanguageDetails(wizardResponse.language).extension)
@@ -64,11 +59,7 @@ export async function downloadSchemaItemCode(node: SchemaItemNode) {
         const schemaCodeDownloader = createSchemaCodeDownloaderObject(node.client)
         const coreCodeFilePath = await schemaCodeDownloader.downloadCode(request)
         vscode.window.showInformationMessage(
-            localize(
-                'AWS.message.info.schemas.downloadCodeBindings.finished',
-                'Downloaded code for schema {0}!',
-                request.schemaName
-            )
+            getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Finished, request.schemaName)
         )
 
         if (coreCodeFilePath) {
@@ -76,10 +67,7 @@ export async function downloadSchemaItemCode(node: SchemaItemNode) {
         }
     } catch (err) {
         const error = err as Error
-        let errorMessage = localize(
-            'AWS.message.error.schemas.downloadCodeBindings.failed_to_download',
-            'Unable to download schema code'
-        )
+        let errorMessage = getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.FailedToDownload)
 
         if (error instanceof UserNotifiedError && error.message) {
             errorMessage = error.message
@@ -131,11 +119,7 @@ export class SchemaCodeDownloader {
             if (error.stack && error.stack.includes('NotFoundException')) {
                 //If the code generation wasn't previously kicked off, do so
                 vscode.window.showInformationMessage(
-                    localize(
-                        'AWS.message.info.schemas.downloadCodeBindings.generate',
-                        '{0}: Generating code (this may take a few seconds the first time)...',
-                        request.schemaName
-                    )
+                    getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Generate, request.schemaName)
                 )
                 await this.generator.generate(request)
 
@@ -144,11 +128,7 @@ export class SchemaCodeDownloader {
 
                 //Download generated code bindings
                 vscode.window.showInformationMessage(
-                    localize(
-                        'AWS.message.info.schemas.downloadCodeBindings.downloading',
-                        '{0}: Downloading code...',
-                        request.schemaName
-                    )
+                    getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Downloading, request.schemaName)
                 )
                 zipContents = await this.downloader.download(request)
             } else {
@@ -156,11 +136,7 @@ export class SchemaCodeDownloader {
             }
         }
         vscode.window.showInformationMessage(
-            localize(
-                'AWS.message.info.schemas.downloadCodeBindings.extracting',
-                '{0}: Extracting/copying code...',
-                request.schemaName
-            )
+            getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Extracting, request.schemaName)
         )
 
         return await this.extractor.extractAndPlace(zipContents, request)
@@ -192,10 +168,7 @@ export class CodeGenerator {
             } else {
                 getLogger().error(error)
                 throw new UserNotifiedError(
-                    localize(
-                        'AWS.message.error.schemas.downloadCodeBindings.failed_to_generate',
-                        'Unable to generate schema code'
-                    )
+                    getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.FailedToGenerate)
                 )
             }
         }
@@ -222,10 +195,8 @@ export class CodeGenerationStatusPoller {
             }
             if (codeGenerationStatus !== CodeGenerationStatus.CREATE_IN_PROGRESS) {
                 throw new UserNotifiedError(
-                    localize(
-                        'AWS.message.error.schemas.downloadCodeBindings.invalid_code_generation_status',
-                        'Invalid Code generation status {0}',
-                        codeGenerationStatus
+                    getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.InvalidCodeGenerationStatus,
+                        codeGenerationStatus ?? 'no status available'
                     )
                 )
             }
@@ -233,11 +204,7 @@ export class CodeGenerationStatusPoller {
             await new Promise<void>(resolve => setTimeout(resolve, retryInterval))
         }
         throw new UserNotifiedError(
-            localize(
-                'AWS.message.error.schemas.downloadCodeBindings.timeout',
-                'Failed to download code for schema {0} before timeout. Please try again later',
-                codeDownloadRequest.schemaName
-            )
+            getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.Timeout, codeDownloadRequest.schemaName)
         )
     }
 
@@ -326,11 +293,7 @@ export class CodeExtractor {
                 const intendedDestinationPath = path.join(destinationDirectory, '/', zipEntry.entryName)
                 if (fs.existsSync(intendedDestinationPath)) {
                     throw new UserNotifiedError(
-                        localize(
-                            'AWS.message.error.schemas.downloadCodeBindings.timeout',
-                            'Unable to place schema code in workspace because there is already a file {0} in the folder hierarchy',
-                            zipEntry.name
-                        )
+                        getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.FailedToExtractCollision, zipEntry.name)
                     )
                 }
             }

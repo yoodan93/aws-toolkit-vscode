@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
+import {LocalizedIds, getLocalizedText} from '../../../shared/localizedIds'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { getLogger } from '../../../shared/logger'
@@ -70,7 +68,7 @@ export class AppNode extends AWSTreeNodeBase {
                 return [
                     new PlaceholderNode(
                         this,
-                        localize('Aws.cdk.explorerNode.app.noStacks', '[No stacks in this CDK App]')
+                        getLocalizedText(LocalizedIds.CDK.ExplorerNode.App.NoStacks)
                     )
                 ]
             }
@@ -82,10 +80,7 @@ export class AppNode extends AWSTreeNodeBase {
             return [
                 new PlaceholderNode(
                     this,
-                    localize(
-                        'Aws.cdk.explorerNode.app.noConstructTree',
-                        '[Unable to load construct tree for this App. Run `cdk synth`]'
-                    )
+                    getLocalizedText(LocalizedIds.CDK.ExplorerNode.App.NoConstructTree)
                 )
             ]
         }

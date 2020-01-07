@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import * as vscode from 'vscode'
 import { AwsContext, ContextChangeEventsArgs } from '../shared/awsContext'
+import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 const STATUSBAR_PRIORITY = 100
-const STATUSBAR_TEXT_NO_CREDENTIALS = localize('AWS.credentials.statusbar.no.credentials', '(not connected)')
+const STATUSBAR_TEXT_NO_CREDENTIALS = getLocalizedText(LocalizedIds.CredentialsStatusBar.NoCredentials)
 
 export async function initializeAwsCredentialsStatusBarItem(
     awsContext: AwsContext,
@@ -18,10 +16,7 @@ export async function initializeAwsCredentialsStatusBarItem(
 ): Promise<void> {
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, STATUSBAR_PRIORITY)
     statusBarItem.command = 'aws.login'
-    statusBarItem.tooltip = localize(
-        'AWS.credentials.statusbar.tooltip',
-        'The current credentials used by the AWS Toolkit.\n\nClick this status bar item to use different credentials.'
-    )
+    statusBarItem.tooltip = getLocalizedText(LocalizedIds.CredentialsStatusBar.Tooltip)
     statusBarItem.show()
 
     context.subscriptions.push(statusBarItem)
@@ -34,9 +29,5 @@ export async function initializeAwsCredentialsStatusBarItem(
 }
 
 export function updateCredentialsStatusBarItem(statusBarItem: vscode.StatusBarItem, credentialsId?: string) {
-    statusBarItem.text = localize(
-        'AWS.credentials.statusbar.text',
-        'AWS Credentials: {0}',
-        credentialsId ?? STATUSBAR_TEXT_NO_CREDENTIALS
-    )
+    statusBarItem.text = getLocalizedText(LocalizedIds.CredentialsStatusBar.Text, credentialsId ?? STATUSBAR_TEXT_NO_CREDENTIALS)
 }

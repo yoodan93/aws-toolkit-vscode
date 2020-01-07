@@ -6,6 +6,8 @@
 import * as nls from 'vscode-nls'
 const localize = nls.loadMessageBundle()
 
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
+
 import * as vscode from 'vscode'
 
 import { listRegistryItems } from '../../eventSchemas/utils'
@@ -30,7 +32,9 @@ export class SchemasNode extends AWSTreeErrorHandlerNode {
     public async getChildren(): Promise<(RegistryItemNode | ErrorNode | PlaceholderNode)[]> {
         await this.handleErrorProneOperation(
             async () => this.updateChildren(),
-            localize('AWS.explorerNode.schemas.error', 'Error loading Schemas resources')
+            // localize('AWS.explorerNode.schemas.error', 'Error loading Schemas resources')
+            getLocalizedText(LocalizedIds.ExplorerNode.SchemasError)
+
         )
 
         if (this.errorNode) {
