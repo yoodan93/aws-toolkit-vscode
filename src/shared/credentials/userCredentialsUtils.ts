@@ -10,7 +10,6 @@ import { Credentials } from 'aws-sdk'
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service'
 import { writeFile } from 'fs-extra'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
 import { AwsContext } from '../awsContext'
 import { StsClient } from '../clients/stsClient'
 import { credentialHelpUrl } from '../constants'
@@ -20,8 +19,7 @@ import { mkdir } from '../filesystem'
 import { fileExists, readFileAsString } from '../filesystemUtilities'
 import { getLogger, Logger } from '../logger'
 import { SystemUtilities } from '../systemUtilities'
-
-const localize = nls.loadMessageBundle()
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 /**
  * The payload used to fill in the handlebars template
@@ -216,9 +214,9 @@ export class UserCredentialsUtils {
     }
 
     public static async notifyUserCredentialsAreBad(profileName: string) {
-        const getHelp = localize('AWS.message.credentials.invalidProfile.help', 'Get Help...')
+        const getHelp = getLocalizedText(LocalizedIds.Message.Credentials.InvalidProfileHelp)
         const selection = await vscode.window.showErrorMessage(
-            localize('AWS.message.credentials.invalidProfile', 'Credentials profile {0} is invalid', profileName),
+            getLocalizedText(LocalizedIds.Message.Credentials.InvalidProfile, profileName),
             getHelp
         )
 

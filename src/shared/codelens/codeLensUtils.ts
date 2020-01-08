@@ -15,7 +15,7 @@ import { SettingsConfiguration } from '../settingsConfiguration'
 import { TelemetryService } from '../telemetry/telemetryService'
 import { Datum } from '../telemetry/telemetryTypes'
 import { defaultMetricDatum } from '../telemetry/telemetryUtils'
-import { localize } from '../utilities/vsCodeUtils'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export type Language = 'python' | 'javascript' | 'csharp'
 
@@ -103,8 +103,8 @@ function makeLocalInvokeCodeLens(
     params: MakeConfigureCodeLensParams & { isDebug: boolean; language: Language }
 ): vscode.CodeLens {
     const title: string = params.isDebug
-        ? localize('AWS.codelens.lambda.invoke.debug', 'Debug Locally')
-        : localize('AWS.codelens.lambda.invoke', 'Run Locally')
+        ? getLocalizedText(LocalizedIds.CodelensLambda.InvokeDebug)
+        : getLocalizedText(LocalizedIds.CodelensLambda.Invoke)
 
     const command: vscode.Command = {
         arguments: [params],
@@ -129,7 +129,7 @@ function makeConfigureCodeLens({
     const command = {
         arguments: [workspaceFolder, handlerName, samTemplate],
         command: 'aws.configureLambda',
-        title: localize('AWS.command.configureLambda', 'Configure')
+        title: getLocalizedText(LocalizedIds.Command.ConfigureLambda)
     }
 
     return new vscode.CodeLens(range, command)

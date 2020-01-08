@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { Credentials } from 'aws-sdk'
 import { env, Uri, ViewColumn, window } from 'vscode'
 import { AwsContext } from './awsContext'
@@ -22,6 +19,7 @@ import { CredentialsValidationResult, UserCredentialsUtils } from './credentials
 import { ext } from './extensionGlobals'
 import { RegionInfo } from './regions/regionInfo'
 import { RegionProvider } from './regions/regionProvider'
+import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 export class DefaultAWSContextCommands {
     private readonly _awsContext: AwsContext
@@ -130,13 +128,11 @@ export class DefaultAWSContextCommands {
                 return state.profileName
             }
 
-            const responseNo: string = localize('AWS.generic.response.no', 'No')
-            const responseYes: string = localize('AWS.generic.response.no', 'Yes')
+            const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
+            const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
 
             const response = await window.showWarningMessage(
-                localize(
-                    'AWS.message.prompt.credentials.definition.tryAgain',
-                    'The credentials do not appear to be valid ({0}). Would you like to try again?',
+                getLocalizedText(LocalizedIds.Message.Prompt.Credentials.DefinitionTryAgain,
                     validationResult.invalidMessage!
                 ),
                 responseYes,
@@ -160,17 +156,14 @@ export class DefaultAWSContextCommands {
     private async getProfileNameFromUser(): Promise<string | undefined> {
         await new DefaultCredentialsFileReaderWriter().setCanUseConfigFileIfExists()
 
-        const responseYes: string = localize('AWS.generic.response.yes', 'Yes')
-        const responseNo: string = localize('AWS.generic.response.no', 'No')
+        const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
+        const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
 
         const credentialsFiles: string[] = await UserCredentialsUtils.findExistingCredentialsFilenames()
 
         if (credentialsFiles.length === 0) {
             const userResponse = await window.showInformationMessage(
-                localize(
-                    'AWS.message.prompt.credentials.create',
-                    'You do not appear to have any AWS Credentials defined. Would you like to set one up now?'
-                ),
+                getLocalizedText(LocalizedIds.Message.Prompt.Credentials.Create),
                 responseYes,
                 responseNo
             )
@@ -188,10 +181,7 @@ export class DefaultAWSContextCommands {
             // encouraged to define some.
             if (profileNames.length === 0) {
                 const userResponse = await window.showInformationMessage(
-                    localize(
-                        'AWS.message.prompt.credentials.create',
-                        'You do not appear to have any AWS Credentials defined. Would you like to set one up now?'
-                    ),
+                    getLocalizedText(LocalizedIds.Message.Prompt.Credentials.Create),
                     responseYes,
                     responseNo
                 )
@@ -235,13 +225,10 @@ export class DefaultAWSContextCommands {
             viewColumn = ViewColumn.Beside
         }
 
-        const responseNo: string = localize('AWS.generic.response.no', 'No')
-        const responseYes: string = localize('AWS.generic.response.yes', 'Yes')
+        const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
+        const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
         const response = await window.showInformationMessage(
-            localize(
-                'AWS.message.prompt.credentials.definition.help',
-                'Would you like some information related to defining credentials?'
-            ),
+            getLocalizedText(LocalizedIds.Message.Prompt.Credentials.DefinitionHelp),
             responseYes,
             responseNo
         )
@@ -286,7 +273,7 @@ export class DefaultAWSContextCommands {
                 detail: r.regionCode
             }))
         const input = await window.showQuickPick(regionsToShow, {
-            placeHolder: localize('AWS.message.selectRegion', 'Select an AWS region'),
+            placeHolder: getLocalizedText(LocalizedIds.Message.SelectRegion),
             matchOnDetail: true
         })
 

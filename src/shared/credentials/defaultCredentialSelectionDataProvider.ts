@@ -11,14 +11,12 @@
 //
 // Based on the multiStepInput code in the QuickInput VSCode extension sample.
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { ExtensionContext, QuickPickItem } from 'vscode'
 import { MultiStepInputFlowController } from '../multiStepInputFlowController'
 import { CredentialSelectionDataProvider } from './credentialSelectionDataProvider'
 import { CredentialSelectionState } from './credentialSelectionState'
 import { CredentialsProfileMru } from './credentialsProfileMru'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 interface ProfileEntry {
     profileName: string
@@ -38,10 +36,10 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<QuickPickItem> {
         return await input.showQuickPick({
-            title: localize('AWS.title.selectCredentialProfile', 'Select an AWS credential profile'),
+            title: getLocalizedText(LocalizedIds.Title.SelectCredentialProfile),
             step: 1,
             totalSteps: 1,
-            placeholder: localize('AWS.placeHolder.selectProfile', 'Select a credential profile'),
+            placeholder: getLocalizedText(LocalizedIds.Placeholder.SelectProfile),
             items: this.getProfileSelectionList(),
             activeItem: state.credentialProfile,
             shouldResume: this.shouldResume.bind(this)
@@ -53,11 +51,11 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<string | undefined> {
         return await input.showInputBox({
-            title: localize('AWS.title.createCredentialProfile', 'Create a new AWS credential profile'),
+            title: getLocalizedText(LocalizedIds.Title.CreateCredentialProfile),
             step: 1,
             totalSteps: 3,
             value: '',
-            prompt: localize('AWS.placeHolder.newProfileName', 'Choose a unique name for the new profile'),
+            prompt: getLocalizedText(LocalizedIds.Placeholder.NewProfilename),
             validate: this.validateNameIsUnique.bind(this),
             shouldResume: this.shouldResume.bind(this)
         })
@@ -68,11 +66,11 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<string | undefined> {
         return await input.showInputBox({
-            title: localize('AWS.title.createCredentialProfile', 'Create a new AWS credential profile'),
+            title: getLocalizedText(LocalizedIds.Title.CreateCredentialProfile),
             step: 2,
             totalSteps: 3,
             value: '',
-            prompt: localize('AWS.placeHolder.inputAccessKey', 'Input the AWS Access Key'),
+            prompt: getLocalizedText(LocalizedIds.Placeholder.InputAccessKey),
             validate: this.validateAccessKey.bind(this),
             ignoreFocusOut: true,
             shouldResume: this.shouldResume.bind(this)
@@ -84,11 +82,11 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<string | undefined> {
         return await input.showInputBox({
-            title: localize('AWS.title.createCredentialProfile', 'Create a new AWS credential profile'),
+            title: getLocalizedText(LocalizedIds.Title.CreateCredentialProfile),
             step: 3,
             totalSteps: 3,
             value: '',
-            prompt: localize('AWS.placeHolder.inputSecretKey', 'Input the AWS Secret Key'),
+            prompt: getLocalizedText(LocalizedIds.Placeholder.InputSecretKey),
             validate: this.validateSecretKey.bind(this),
             ignoreFocusOut: true,
             shouldResume: this.shouldResume.bind(this)
@@ -127,7 +125,7 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
             const selectionItem: QuickPickItem = { label: profile.profileName }
 
             if (profile.isRecentlyUsed) {
-                selectionItem.description = localize('AWS.profile.recentlyUsed', 'recently used')
+                selectionItem.description = getLocalizedText(LocalizedIds.ProfileRecentlyUsed)
             }
 
             selectionList.push(selectionItem)

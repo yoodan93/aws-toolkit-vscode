@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { samDeployDocUrl } from '../../shared/constants'
@@ -19,6 +16,7 @@ import { MultiStepWizard, WizardStep } from '../../shared/wizards/multiStepWizar
 import { configureParameterOverrides } from '../config/configureParameterOverrides'
 import { detectLocalTemplates } from '../local/detectLocalTemplates'
 import { getOverriddenParameters, getParameters } from '../utilities/parameterUtils'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export interface SamDeployWizardResponse {
     parameterOverrides: Map<string, string>
@@ -121,7 +119,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
     public readonly onDetectLocalTemplates = detectLocalTemplates
     public readonly getParameters = getParameters
     public readonly getOverriddenParameters = getOverriddenParameters
-    private readonly helpButton = createHelpButton(localize('AWS.command.help', 'View Documentation'))
+    private readonly helpButton = createHelpButton(getLocalizedText(LocalizedIds.Command.Help))
 
     public constructor() {}
 
@@ -140,10 +138,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         const quickPick = picker.createQuickPick<SamTemplateQuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: localize(
-                    'AWS.samcli.deploy.template.prompt',
-                    'Which SAM Template would you like to deploy to AWS?'
-                )
+                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.TemplatePrompt)
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
             items: await getTemplateChoices(this.onDetectLocalTemplates, ...workspaceFolders)
@@ -172,14 +167,11 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         missingParameters?: Set<string>
     }): Promise<ParameterPromptResult> {
         if (missingParameters.size < 1) {
-            const prompt = localize(
-                'AWS.samcli.deploy.parameters.optionalPrompt.message',
-                // prettier-ignore
-                'The template {0} contains parameters. Would you like to override the default values for these parameters?',
+            const prompt = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.OptionalPrompt.Message,
                 templateUri.fsPath
             )
-            const responseYes = localize('AWS.samcli.deploy.parameters.optionalPrompt.responseYes', 'Yes')
-            const responseNo = localize('AWS.samcli.deploy.parameters.optionalPrompt.responseNo', 'No')
+            const responseYes = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.OptionalPrompt.ResponseYes)
+            const responseNo = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.OptionalPrompt.ResponseNo)
 
             const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
                 options: {
@@ -212,17 +204,11 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
 
             return ParameterPromptResult.Cancel
         } else {
-            const prompt = localize(
-                'AWS.samcli.deploy.parameters.mandatoryPrompt.message',
-                // prettier-ignore
-                'The template {0} contains parameters without default values. In order to deploy, you must provide values for these parameters. Configure them now?',
+            const prompt = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.MandatoryPrompt.Message,
                 templateUri.fsPath
             )
-            const responseConfigure = localize(
-                'AWS.samcli.deploy.parameters.mandatoryPrompt.responseConfigure',
-                'Configure'
-            )
-            const responseCancel = localize('AWS.samcli.deploy.parameters.mandatoryPrompt.responseCancel', 'Cancel')
+            const responseConfigure = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.MandatoryPrompt.ResponseConfigure)
+            const responseCancel = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.MandatoryPrompt.ResponseCancel)
 
             const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
                 options: {
@@ -263,7 +249,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
 
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
-                title: localize('AWS.samcli.deploy.region.prompt', 'Which AWS Region would you like to deploy to?'),
+                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.RegionPrompt),
                 value: initialRegionCode || '',
                 matchOnDetail: true,
                 ignoreFocusOut: true
@@ -276,7 +262,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
                 alwaysShow: r.regionCode === initialRegionCode,
                 description:
                     r.regionCode === initialRegionCode
-                        ? localize('AWS.samcli.wizard.selectedPreviously', 'Selected Previously')
+                        ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously)
                         : ''
             })),
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]
@@ -308,14 +294,9 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         const inputBox = input.createInputBox({
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
             options: {
-                title: localize(
-                    'AWS.samcli.deploy.s3Bucket.prompt',
-                    'Enter the AWS S3 bucket to which your code should be deployed'
-                ),
+                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Prompt),
                 ignoreFocusOut: true,
-                prompt: localize(
-                    'AWS.samcli.deploy.s3Bucket.region',
-                    'S3 bucket must be in selected region: {0}',
+                prompt: getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Region,
                     selectedRegion
                 )
             }
@@ -357,7 +338,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         const inputBox = input.createInputBox({
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
             options: {
-                title: localize('AWS.samcli.deploy.stackName.prompt', 'Enter the name to use for the deployed stack'),
+                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Prompt),
                 ignoreFocusOut: true
             }
         })
@@ -551,49 +532,31 @@ class SamTemplateQuickPickItem implements vscode.QuickPickItem {
 // https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-s3-bucket-naming-requirements.html
 export function validateS3Bucket(value: string): string | undefined {
     if (value.length < 3 || value.length > 63) {
-        return localize(
-            'AWS.samcli.deploy.s3Bucket.error.length',
-            'S3 bucket name must be between 3 and 63 characters long'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.Length)
     }
 
     if (!/^[a-z\d\.\-]+$/.test(value)) {
-        return localize(
-            'AWS.samcli.deploy.s3Bucket.error.invalidCharacters',
-            'S3 bucket name may only contain lower-case characters, numbers, periods, and dashes'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.InvalidCharacters)
     }
 
     if (/^\d+\.\d+\.\d+\.\d+$/.test(value)) {
-        return localize(
-            'AWS.samcli.deploy.s3Bucket.error.ipAddress',
-            'S3 bucket name may not be formatted as an IP address (198.51.100.24)'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.IPAddress)
     }
 
     if (value[value.length - 1] === '-') {
-        return localize('AWS.samcli.deploy.s3Bucket.error.endsWithDash', 'S3 bucket name may not end with a dash')
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.EndsWithDash)
     }
 
     if (value.includes('..')) {
-        return localize(
-            'AWS.samcli.deploy.s3Bucket.error.consecutivePeriods',
-            'S3 bucket name may not have consecutive periods'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.ConsecutivePeriods)
     }
 
     if (value.includes('.-') || value.includes('-.')) {
-        return localize(
-            'AWS.samcli.deploy.s3Bucket.error.dashAdjacentPeriods',
-            'S3 bucket name may not contain a period adjacent to a dash'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.DashAdjacentPeriods)
     }
 
     if (value.split('.').some(label => !/^[a-z\d]/.test(label))) {
-        return localize(
-            'AWS.samcli.deploy.s3Bucket.error.labelFirstCharacter',
-            'Each label in an S3 bucket name must begin with a number or a lower-case character'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.LabelFirstCharacter)
     }
 
     return undefined
@@ -604,24 +567,15 @@ export function validateS3Bucket(value: string): string | undefined {
 // It must start with an alphabetic character and cannot be longer than 128 characters.
 function validateStackName(value: string): string | undefined {
     if (!/^[a-zA-Z\d\-]+$/.test(value)) {
-        return localize(
-            'AWS.samcli.deploy.stackName.error.invalidCharacters',
-            'A stack name may contain only alphanumeric characters (case sensitive) and hyphens'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Error.InvalidCharacters)
     }
 
     if (!/^[a-zA-Z]/.test(value)) {
-        return localize(
-            'AWS.samcli.deploy.stackName.error.firstCharacter',
-            'A stack name must begin with an alphabetic character'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Error.FirstCharacter)
     }
 
     if (value.length > 128) {
-        return localize(
-            'AWS.samcli.deploy.stackName.error.length',
-            'A stack name must not be longer than 128 characters'
-        )
+        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Error.Length)
     }
 
     // TODO: Validate that a stack with this name does not already exist.

@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { CloudFormation, Lambda } from 'aws-sdk'
 import * as vscode from 'vscode'
 import { CloudFormationClient } from '../shared/clients/cloudFormationClient'
 import { LambdaClient } from '../shared/clients/lambdaClient'
+import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 export async function* listCloudFormationStacks(
     client: CloudFormationClient
@@ -17,7 +15,7 @@ export async function* listCloudFormationStacks(
     // TODO: this 'loading' message needs to go under each regional entry
     // in the explorer, and be removed when that region's query completes
     const status = vscode.window.setStatusBarMessage(
-        localize('AWS.message.statusBar.loading.cloudFormation', 'Loading CloudFormation Stacks...')
+        getLocalizedText(LocalizedIds.Message.StatusBar.Loading.CloudFormation)
     )
 
     try {
@@ -29,7 +27,7 @@ export async function* listCloudFormationStacks(
 
 export async function* listLambdaFunctions(client: LambdaClient): AsyncIterableIterator<Lambda.FunctionConfiguration> {
     const status = vscode.window.setStatusBarMessage(
-        localize('AWS.message.statusBar.loading.lambda', 'Loading Lambdas...')
+        getLocalizedText(LocalizedIds.Message.StatusBar.Loading.Lambda)
     )
 
     try {

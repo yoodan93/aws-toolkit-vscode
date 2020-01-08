@@ -10,15 +10,12 @@ import * as jsonParser from 'jsonc-parser'
 import * as os from 'os'
 import * as _path from 'path'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
 import { mkdir } from '../../shared/filesystem'
 import * as fsUtils from '../../shared/filesystemUtilities'
 import { getLogger, Logger } from '../../shared/logger'
 import { getTabSizeSetting } from '../../shared/utilities/editorUtilities'
 import { saveDocumentIfDirty } from '../../shared/utilities/textDocumentUtilities'
-
-const localize = nls.loadMessageBundle()
-
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 export interface TemplatesConfig {
     templates: {
         [relativePath: string]: TemplateConfig | undefined
@@ -123,10 +120,7 @@ export function showTemplatesConfigurationError(
     const logger: Logger = getLogger()
 
     showErrorMessage(
-        localize(
-            'AWS.lambda.configure.error.fieldtype',
-            // tslint:disable-next-line:max-line-length
-            'Your templates.json file has an issue. {0} was detected as {1} instead of one of the following: [{2}]. Please change or remove this field, and try again.',
+        getLocalizedText(LocalizedIds.Lambda.ConfigureErrorFieldtype,
             error.jsonPath.join('.'),
             error.actualType,
             error.expectedTypes.join(', ')

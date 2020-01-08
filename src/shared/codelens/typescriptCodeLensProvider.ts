@@ -13,8 +13,8 @@ import { DefaultSamLocalInvokeCommand, WAIT_FOR_DEBUGGER_MESSAGES } from '../sam
 import { Datum, TelemetryNamespace } from '../telemetry/telemetryTypes'
 import { registerCommand } from '../telemetry/telemetryUtils'
 import { TypescriptLambdaHandlerSearch } from '../typescriptLambdaHandlerSearch'
-import { getChannelLogger, getDebugPort, localize } from '../utilities/vsCodeUtils'
-
+import { getChannelLogger, getDebugPort } from '../utilities/vsCodeUtils'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import { nodeJsRuntimes } from '../../lambda/models/samLambdaRuntime'
 import { getLogger } from '../logger'
 import { DefaultValidatingSamCliProcessInvoker } from '../sam/cli/defaultValidatingSamCliProcessInvoker'
@@ -26,9 +26,7 @@ async function getSamProjectDirPathForFile(filepath: string): Promise<string> {
     const packageJsonPath: string | undefined = await findFileInParentPaths(path.dirname(filepath), 'package.json')
     if (!packageJsonPath) {
         throw new Error( // TODO: Do we want to localize errors? This might be confusing if we need to review logs.
-            localize(
-                'AWS.error.sam.local.package_json_not_found',
-                'Unable to find package.json related to {0}',
+            getLocalizedText(LocalizedIds.Error.SAMLocalPackageJSONNotFound,
                 filepath
             )
         )
@@ -102,9 +100,7 @@ export function initialize({
                 )
 
                 vscode.window.showErrorMessage(
-                    localize(
-                        'AWS.samcli.local.invoke.runtime.unsupported',
-                        'Unsupported {0} runtime: {1}',
+                    getLocalizedText(LocalizedIds.SAMCLI.Local.Invoke.RuntimeUnsupported,
                         'javascript',
                         runtime
                     )

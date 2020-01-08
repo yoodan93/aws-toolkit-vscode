@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { CloudFormation, Lambda } from 'aws-sdk'
 import * as os from 'os'
 import * as vscode from 'vscode'
@@ -19,6 +16,7 @@ import { makeChildrenNodes } from '../../shared/treeview/treeNodeUtilities'
 import { intersection, toArrayAsync, toMap, toMapAsync, updateInPlace } from '../../shared/utilities/collectionUtils'
 import { listCloudFormationStacks, listLambdaFunctions } from '../utils'
 import { LambdaFunctionNode } from './lambdaFunctionNode'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export const CONTEXT_VALUE_CLOUDFORMATION_LAMBDA_FUNCTION = 'awsCloudFormationFunctionNode'
 
@@ -41,10 +39,10 @@ export class CloudFormationNode extends AWSTreeNodeBase {
                 new ErrorNode(
                     this,
                     error,
-                    localize('AWS.explorerNode.cloudFormation.error', 'Error loading CloudFormation resources')
+                    getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.Error)
                 ),
             getNoChildrenPlaceholderNode: async () =>
-                new PlaceholderNode(this, localize('AWS.explorerNode.cloudformation.noStacks', '[No Stacks found]')),
+                new PlaceholderNode(this, getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.NoStacks)),
             sort: (nodeA: CloudFormationStackNode, nodeB: CloudFormationStackNode) =>
                 nodeA.stackName.localeCompare(nodeB.stackName)
         })
@@ -101,12 +99,12 @@ export class CloudFormationStackNode extends AWSTreeNodeBase {
                 new ErrorNode(
                     this,
                     error,
-                    localize('AWS.explorerNode.cloudFormation.error', 'Error loading CloudFormation resources')
+                    getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.Error)
                 ),
             getNoChildrenPlaceholderNode: async () =>
                 new PlaceholderNode(
                     this,
-                    localize('AWS.explorerNode.cloudFormation.noFunctions', '[Stack has no Lambda Functions]')
+                    getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.NoFunctions)
                 ),
             sort: (nodeA: LambdaFunctionNode, nodeB: LambdaFunctionNode) =>
                 nodeA.functionName.localeCompare(nodeB.functionName)

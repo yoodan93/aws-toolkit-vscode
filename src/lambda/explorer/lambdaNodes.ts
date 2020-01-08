@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { Lambda } from 'aws-sdk'
 import * as vscode from 'vscode'
 import { LambdaClient } from '../../shared/clients/lambdaClient'
@@ -17,6 +14,7 @@ import { makeChildrenNodes } from '../../shared/treeview/treeNodeUtilities'
 import { toArrayAsync, toMap, updateInPlace } from '../../shared/utilities/collectionUtils'
 import { listLambdaFunctions } from '../utils'
 import { LambdaFunctionNode } from './lambdaFunctionNode'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export const CONTEXT_VALUE_LAMBDA_FUNCTION = 'awsRegionFunctionNode'
 
@@ -40,9 +38,9 @@ export class LambdaNode extends AWSTreeNodeBase {
                 return [...this.functionNodes.values()]
             },
             getErrorNode: async (error: Error) =>
-                new ErrorNode(this, error, localize('AWS.explorerNode.lambda.error', 'Error loading Lambda resources')),
+                new ErrorNode(this, error, getLocalizedText(LocalizedIds.ExplorerNode.Lambda.Error)),
             getNoChildrenPlaceholderNode: async () =>
-                new PlaceholderNode(this, localize('AWS.explorerNode.lambda.noFunctions', '[No Functions found]')),
+                new PlaceholderNode(this, getLocalizedText(LocalizedIds.ExplorerNode.Lambda.NoFunctions)),
             sort: (nodeA: LambdaFunctionNode, nodeB: LambdaFunctionNode) =>
                 nodeA.functionName.localeCompare(nodeB.functionName)
         })

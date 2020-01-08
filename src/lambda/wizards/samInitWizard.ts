@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { Runtime } from 'aws-sdk/clients/lambda'
 import { Set } from 'immutable'
 import * as path from 'path'
@@ -14,6 +11,7 @@ import { samInitDocUrl } from '../../shared/constants'
 import { createHelpButton } from '../../shared/ui/buttons'
 import * as input from '../../shared/ui/input'
 import * as picker from '../../shared/ui/picker'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import {
     BrowseFolderQuickPickItem,
     FolderQuickPickItem,
@@ -39,7 +37,7 @@ export interface CreateNewSamAppWizardContext {
 
 export class DefaultCreateNewSamAppWizardContext extends WizardContext implements CreateNewSamAppWizardContext {
     public readonly lambdaRuntimes = lambdaRuntime.samLambdaRuntimes
-    private readonly helpButton = createHelpButton(localize('AWS.command.help', 'View Documentation'))
+    private readonly helpButton = createHelpButton(getLocalizedText(LocalizedIds.Command.Help))
 
     public constructor() {
         super()
@@ -49,7 +47,7 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: localize('AWS.samcli.initWizard.runtime.prompt', 'Select a SAM Application Runtime'),
+                title: getLocalizedText(LocalizedIds.SAMCLI.InitWizard.RuntimePrompt),
                 value: currRuntime ? currRuntime : ''
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
@@ -60,7 +58,7 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
                     label: runtime,
                     alwaysShow: runtime === currRuntime,
                     description:
-                        runtime === currRuntime ? localize('AWS.wizard.selectedPreviously', 'Selected Previously') : ''
+                        runtime === currRuntime ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously) : ''
                 }))
         })
 
@@ -85,20 +83,14 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
             .concat([
                 new BrowseFolderQuickPickItem(
                     this,
-                    localize(
-                        'AWS.samcli.initWizard.location.prompt',
-                        'The folder you select will be added to your VS Code workspace.'
-                    )
+                    getLocalizedText(LocalizedIds.SAMCLI.InitWizard.LocationSelectFolderDetail)
                 )
             ])
 
         const quickPick = picker.createQuickPick({
             options: {
                 ignoreFocusOut: true,
-                title: localize(
-                    'AWS.samcli.initWizard.location.prompt',
-                    'Select a workspace folder for your new project'
-                )
+                title: getLocalizedText(LocalizedIds.SAMCLI.InitWizard.LocationPrompt)
             },
             items: items,
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]
@@ -133,7 +125,7 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
     public async promptUserForName(): Promise<string | undefined> {
         const inputBox = input.createInputBox({
             options: {
-                title: localize('AWS.samcli.initWizard.name.prompt', 'Enter a name for your new application'),
+                title: getLocalizedText(LocalizedIds.SAMCLI.InitWizard.Name.Prompt),
                 ignoreFocusOut: true
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]
@@ -143,13 +135,11 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
             inputBox: inputBox,
             onValidateInput: (value: string) => {
                 if (!value) {
-                    return localize('AWS.samcli.initWizard.name.error.empty', 'Application name cannot be empty')
+                    return getLocalizedText(LocalizedIds.SAMCLI.InitWizard.Name.Error.Empty)
                 }
 
                 if (value.includes(path.sep)) {
-                    return localize(
-                        'AWS.samcli.initWizard.name.error.pathSep',
-                        'The path separator ({0}) is not allowed in application names',
+                    return getLocalizedText(LocalizedIds.SAMCLI.InitWizard.Name.Error.PathSep,
                         path.sep
                     )
                 }

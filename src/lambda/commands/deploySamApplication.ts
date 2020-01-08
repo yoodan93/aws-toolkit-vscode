@@ -6,7 +6,6 @@
 import * as del from 'del'
 import * as path from 'path'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
 
 import { AwsContext, NoActiveCredentialError } from '../../shared/awsContext'
 import { makeTemporaryToolkitFolder } from '../../shared/filesystemUtilities'
@@ -20,8 +19,7 @@ import { throwAndNotifyIfInvalid } from '../../shared/sam/cli/samCliValidationUt
 import { makeCheckLogsMessage } from '../../shared/utilities/messages'
 import { ChannelLogger } from '../../shared/utilities/vsCodeUtils'
 import { DefaultSamDeployWizardContext, SamDeployWizard, SamDeployWizardResponse } from '../wizards/samDeployWizard'
-
-const localize = nls.loadMessageBundle()
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 interface DeploySamApplicationParameters {
     sourceTemplatePath: string
@@ -104,9 +102,7 @@ export async function deploySamApplication(
         )
 
         window.setStatusBarMessage(
-            localize(
-                'AWS.samcli.deploy.statusbar.message',
-                '$(cloud-upload) Deploying SAM Application to {0}...',
+            getLocalizedText(LocalizedIds.SAMCLI.Deploy.StatusBarMessage,
                 deployWizardResponse.stackName
             ),
             deployApplicationPromise
@@ -238,13 +234,13 @@ async function deploy(params: {
         )
 
         params.window.showInformationMessage(
-            localize('AWS.samcli.deploy.workflow.success.general', 'SAM Application deployment succeeded.')
+            getLocalizedText(LocalizedIds.SAMCLI.Deploy.Workflow.SuccessGeneral)
         )
     } catch (err) {
         outputDeployError(err as Error, params.channelLogger)
 
         params.window.showErrorMessage(
-            localize('AWS.samcli.deploy.workflow.error', 'Failed to deploy SAM application.')
+            getLocalizedText(LocalizedIds.SAMCLI.Deploy.Workflow.Error)
         )
     }
 }
