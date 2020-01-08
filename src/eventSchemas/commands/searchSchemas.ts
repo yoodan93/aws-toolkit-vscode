@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
+
 import { Schemas } from 'aws-sdk'
 import _ = require('lodash')
 import path = require('path')
@@ -25,6 +24,7 @@ import { BaseTemplates } from '../../shared/templates/baseTemplates'
 import { toArrayAsync } from '../../shared/utilities/collectionUtils'
 import { getTabSizeSetting } from '../../shared/utilities/editorUtilities'
 import { SchemaTemplates } from '../templates/searchSchemasTemplates'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export async function createSearchSchemasWebView(params: { node: RegistryItemNode | SchemasNode }) {
     const logger: Logger = getLogger()
@@ -32,7 +32,7 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
     const registryNames = await getRegistryNames(params.node, client)
 
     if (registryNames.length === 0) {
-        vscode.window.showInformationMessage(localize('AWS.schemas.search.no_registries', 'No Schema Registries'))
+        vscode.window.showInformationMessage(getLocalizedText(LocalizedIds.Schemas.Search.NoRegistries))
 
         return
     }
@@ -40,7 +40,7 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
     try {
         const view = vscode.window.createWebviewPanel(
             'html',
-            localize('AWS.schemas.search.title', 'EventBridge Schemas Search'),
+            getLocalizedText(LocalizedIds.Schemas.Search.Title),
             vscode.ViewColumn.Active,
             {
                 enableScripts: true,
@@ -57,11 +57,8 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
         view.webview.html = baseTemplateFn({
             content: searchTemplate({
                 Header: getPageHeader(registryNames),
-                SearchInputPlaceholder: localize(
-                    'AWS.schemas.search.input.placeholder',
-                    'Search for schema keyword...'
-                ),
-                VersionPrefix: localize('AWS.schemas.search.version.prefix', 'Search matched version:'),
+                SearchInputPlaceholder: getLocalizedText(LocalizedIds.Schemas.Search.InputPlaceholder),
+                VersionPrefix: getLocalizedText(LocalizedIds.Schemas.Search.VersionPrefix),
                 Scripts: loadScripts,
                 Libraries: loadLibs,
                 Stylesheets: loadStylesheets
@@ -70,10 +67,10 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
 
         view.webview.postMessage({
             command: 'setLocalizedMessages',
-            noSchemasFound: localize('AWS.schemas.search.no_results', 'No schemas found'),
-            searching: localize('AWS.schemas.search.searching', 'Searching for schemas...'),
-            loading: localize('AWS.schemas.search.loading', 'Loading...'),
-            select: localize('AWS.schemas.search.select', 'Select a schema')
+            noSchemasFound: getLocalizedText(LocalizedIds.Schemas.Search.NoResults),
+            searching: getLocalizedText(LocalizedIds.Schemas.Search.Searching),
+            loading: getLocalizedText(LocalizedIds.Schemas.Search.Loading),
+            select: getLocalizedText(LocalizedIds.Schemas.Search.Select)
         })
 
         view.webview.onDidReceiveMessage(
@@ -103,7 +100,7 @@ export async function getRegistryNames(node: RegistryItemNode | SchemasNode, cli
             const error = err as Error
             getLogger().error(error)
             vscode.window.showErrorMessage(
-                localize('AWS.message.error.schemas.search.failed_to_load_resources', 'Error loading Schemas resources')
+                getLocalizedText(LocalizedIds.Message.Error.Schemas.Search.FailedToLoadResources)
             )
         }
     }
@@ -117,10 +114,10 @@ export async function getRegistryNames(node: RegistryItemNode | SchemasNode, cli
 
 export function getPageHeader(registryNames: string[]) {
     if (registryNames.length === 1) {
-        return localize('AWS.schemas.search.header.text.singleRegistry', 'Search "{0}" registry', registryNames[0])
+        return getLocalizedText(LocalizedIds.Schemas.Search.HeaderTextSingleRegistry, registryNames[0])
     }
 
-    return localize('AWS.schemas.search.header.text.allRegistries', 'Search across all registries')
+    return getLocalizedText(LocalizedIds.Schemas.Search.HeaderTextAllRegistries)
 }
 
 export interface CommandMessage {
@@ -236,11 +233,7 @@ export async function getSearchListForSingleRegistry(
         getLogger().error(err)
 
         vscode.window.showErrorMessage(
-            localize(
-                'AWS.message.error.schemas.search.failed_to_search_registry',
-                'Unable to search registry {0}',
-                registryName
-            )
+            getLocalizedText(LocalizedIds.Message.Error.Schemas.Search.FailedToSearchRegistry, registryName)
         )
     }
 

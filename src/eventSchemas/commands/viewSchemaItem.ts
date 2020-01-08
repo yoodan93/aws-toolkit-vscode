@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import * as vscode from 'vscode'
 import { getLogger, Logger } from '../../shared/logger'
 import { getTabSizeSetting } from '../../shared/utilities/editorUtilities'
 import { SchemaItemNode } from '../explorer/schemaItemNode'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export async function viewSchemaItem(node: SchemaItemNode) {
     const logger: Logger = getLogger()
@@ -20,11 +18,7 @@ export async function viewSchemaItem(node: SchemaItemNode) {
     } catch (err) {
         const error = err as Error
         vscode.window.showErrorMessage(
-            localize(
-                'AWS.message.error.schemas.viewSchema.could_not_open',
-                'Could not fetch and display schema {0} contents',
-                node.schemaName
-            )
+            getLocalizedText(LocalizedIds.Message.Error.Schemas.ViewSchemaCouldNotOpen, node.schemaName)
         )
         logger.error('Error on schema preview', error)
     }

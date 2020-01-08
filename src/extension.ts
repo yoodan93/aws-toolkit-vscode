@@ -4,7 +4,7 @@
  */
 
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
+
 
 import { activate as activateAwsExplorer } from './awsexplorer/activation'
 import { activate as activateCdk } from './cdk/activation'
@@ -32,13 +32,13 @@ import { TelemetryNamespace } from './shared/telemetry/telemetryTypes'
 import { registerCommand } from './shared/telemetry/telemetryUtils'
 import { ExtensionDisposableFiles } from './shared/utilities/disposableFiles'
 import { getChannelLogger } from './shared/utilities/vsCodeUtils'
+import {LocalizedIds, getLocalizedText} from './shared/localizedIds'
 
 export async function activate(context: vscode.ExtensionContext) {
-    const localize = nls.loadMessageBundle()
 
     ext.context = context
     await activateLogger()
-    const toolkitOutputChannel = vscode.window.createOutputChannel(localize('AWS.channel.aws.toolkit', 'AWS Toolkit'))
+    const toolkitOutputChannel = vscode.window.createOutputChannel(getLocalizedText(LocalizedIds.Channel.AWSToolkit))
 
     try {
         await new DefaultCredentialsFileReaderWriter().setCanUseConfigFileIfExists()

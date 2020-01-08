@@ -3,23 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
 
 import * as vscode from 'vscode'
 import { CloudFormationClient } from '../../shared/clients/cloudFormationClient'
 import { ext } from '../../shared/extensionGlobals'
 import { getLogger, Logger } from '../../shared/logger'
 import { CloudFormationStackNode } from '../explorer/cloudFormationNodes'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export async function deleteCloudFormation(refresh: () => void, node?: CloudFormationStackNode) {
     const logger: Logger = getLogger()
     if (!node) {
         vscode.window.showErrorMessage(
-            localize(
-                'AWS.message.error.cloudFormation.unsupported',
-                'Unable to delete a CloudFormation Stack. No stack provided.'
-            )
+            getLocalizedText(LocalizedIds.Message.Error.CloudFormation.Unsupported)
         )
 
         return
@@ -27,12 +23,12 @@ export async function deleteCloudFormation(refresh: () => void, node?: CloudForm
 
     const stackName = node.stackName
 
-    const responseYes: string = localize('AWS.generic.response.yes', 'Yes')
-    const responseNo: string = localize('AWS.generic.response.no', 'No')
+    const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
+    const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
 
     try {
         const userResponse = await vscode.window.showInformationMessage(
-            localize('AWS.message.prompt.deleteCloudFormation', 'Are you sure you want to delete {0}?', stackName),
+            getLocalizedText(LocalizedIds.Message.Prompt.CloudFormationDelete, stackName),
             responseYes,
             responseNo
         )
@@ -43,7 +39,7 @@ export async function deleteCloudFormation(refresh: () => void, node?: CloudForm
             await client.deleteStack(stackName)
 
             vscode.window.showInformationMessage(
-                localize('AWS.message.info.cloudFormation.delete', 'Deleted CloudFormation Stack {0}', stackName)
+                getLocalizedText(LocalizedIds.Message.Info.CloudFormationDelete, stackName)
             )
 
             refresh()
@@ -52,9 +48,7 @@ export async function deleteCloudFormation(refresh: () => void, node?: CloudForm
         const error = err as Error
 
         vscode.window.showInformationMessage(
-            localize(
-                'AWS.message.error.cloudFormation.delete',
-                'An error occurred while deleting {0}. Please check the stack events on the AWS Console',
+            getLocalizedText(LocalizedIds.Message.Error.CloudFormation.Delete,
                 stackName
             )
         )

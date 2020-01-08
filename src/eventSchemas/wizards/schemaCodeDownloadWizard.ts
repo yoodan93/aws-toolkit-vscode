@@ -3,14 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import { Set } from 'immutable'
 import * as vscode from 'vscode'
-
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import { schemaCodeDownloadDocUrl } from '../../shared/constants'
 import { createHelpButton } from '../../shared/ui/buttons'
+
 import * as picker from '../../shared/ui/picker'
 import {
     BrowseFolderQuickPickItem,
@@ -40,7 +38,7 @@ export interface SchemaCodeDownloadWizardContext {
 
 export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implements SchemaCodeDownloadWizardContext {
     public readonly schemaLangs = codeLang.schemaCodeLangs
-    private readonly helpButton = createHelpButton(localize('AWS.command.help', 'View Documentation'))
+    private readonly helpButton = createHelpButton(getLocalizedText(LocalizedIds.Command.Help))
     public constructor(private readonly node: SchemaItemNode) {
         super()
         this.node = node
@@ -52,10 +50,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: localize(
-                    'AWS.schemas.downloadCodeBindings.initWizard.language.prompt',
-                    'Select a code binding language'
-                ),
+                title: getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.LanguagePrompt),
                 value: currLanguage ? currLanguage : ''
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
@@ -63,7 +58,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
                 label: language,
                 alwaysShow: language === currLanguage,
                 description:
-                    language === currLanguage ? localize('AWS.wizard.selectedPreviously', 'Selected Previously') : ''
+                    language === currLanguage ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously) : ''
             }))
         })
 
@@ -88,9 +83,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: localize(
-                    'AWS.schemas.downloadCodeBindings.initWizard.version.prompt',
-                    'Select a version for schema {0} :',
+                title: getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.VersionPrompt,
                     this.node.schemaName
                 ),
                 value: currSchemaVersion ? currSchemaVersion : ''
@@ -101,7 +94,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
                 alwaysShow: schemaVersion.SchemaVersion === currSchemaVersion,
                 description:
                     schemaVersion === currSchemaVersion
-                        ? localize('AWS.wizard.selectedPreviously', 'Selected Previously')
+                        ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously)
                         : ''
             }))
         })
@@ -127,20 +120,14 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
             .concat([
                 new BrowseFolderQuickPickItem(
                     this,
-                    localize(
-                        'AWS.schemas.downloadCodeBindings.initWizard.location.select.folder.detail',
-                        'Code bindings will be downloaded to selected folder.'
-                    )
+                    getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.LocationSelectFolderDetail)
                 )
             ])
 
         const quickPick = picker.createQuickPick({
             options: {
                 ignoreFocusOut: true,
-                title: localize(
-                    'AWS.schemas.downloadCodeBindings.initWizard.location.prompt',
-                    'Select a workspace folder to download code bindings'
-                )
+                title: getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.LocationPrompt)
             },
             items: items,
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]

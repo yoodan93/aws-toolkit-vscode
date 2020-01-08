@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
+
 
 import { Schemas } from 'aws-sdk'
 import * as vscode from 'vscode'
 import { SchemaClient } from '../shared/clients/schemaClient'
+import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 export async function* listRegistryItems(client: SchemaClient): AsyncIterableIterator<Schemas.RegistrySummary> {
     const status = vscode.window.setStatusBarMessage(
-        localize('AWS.message.statusBar.loading.registries', 'Loading Registry Items...')
+        getLocalizedText(LocalizedIds.Message.StatusBar.Loading.Registries)
     )
 
     try {
@@ -27,7 +27,7 @@ export async function* listSchemaItems(
     registryName: string
 ): AsyncIterableIterator<Schemas.SchemaSummary> {
     const status = vscode.window.setStatusBarMessage(
-        localize('AWS.message.statusBar.loading.schemaItems', 'Loading Schema Items...')
+        getLocalizedText(LocalizedIds.Message.StatusBar.Loading.SchemaItems)
     )
 
     try {
@@ -43,7 +43,7 @@ export async function* searchSchemas(
     registryName: string
 ): AsyncIterableIterator<Schemas.SearchSchemaSummary> {
     const status = vscode.window.setStatusBarMessage(
-        localize('AWS.message.statusBar.searching.schemas', 'Searching Schemas...')
+        getLocalizedText(LocalizedIds.Message.StatusBar.SearchingSchemas)
     )
 
     try {

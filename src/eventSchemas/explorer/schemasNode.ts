@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
-
 import * as vscode from 'vscode'
 
 import { listRegistryItems } from '../../eventSchemas/utils'
@@ -19,6 +14,7 @@ import { ErrorNode } from '../../shared/treeview/nodes/errorNode'
 import { PlaceholderNode } from '../../shared/treeview/nodes/placeholderNode'
 import { toMapAsync, updateInPlace } from '../../shared/utilities/collectionUtils'
 import { RegistryItemNode } from './registryItemNode'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export class SchemasNode extends AWSTreeErrorHandlerNode {
     private readonly registryNodes: Map<string, RegistryItemNode>
@@ -32,9 +28,7 @@ export class SchemasNode extends AWSTreeErrorHandlerNode {
     public async getChildren(): Promise<(RegistryItemNode | ErrorNode | PlaceholderNode)[]> {
         await this.handleErrorProneOperation(
             async () => this.updateChildren(),
-            // localize('AWS.explorerNode.schemas.error', 'Error loading Schemas resources')
             getLocalizedText(LocalizedIds.ExplorerNode.SchemasError)
-
         )
 
         if (this.errorNode) {
@@ -47,7 +41,7 @@ export class SchemasNode extends AWSTreeErrorHandlerNode {
             )
         }
 
-        return [new PlaceholderNode(this, localize('AWS.explorerNode.schemas.noRegistry', '[No Schema Registries]'))]
+        return [new PlaceholderNode(this, getLocalizedText(LocalizedIds.ExplorerNode.SchemasNoRegistry))]
     }
 
     public async updateChildren(): Promise<void> {

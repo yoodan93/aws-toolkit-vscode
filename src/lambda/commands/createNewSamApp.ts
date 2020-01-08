@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { ActivationLaunchPath } from '../../shared/activationLaunchPath'
@@ -19,6 +16,7 @@ import { makeCheckLogsMessage } from '../../shared/utilities/messages'
 import { ChannelLogger } from '../../shared/utilities/vsCodeUtils'
 import { addFolderToWorkspace } from '../../shared/utilities/workspaceUtils'
 import { getDependencyManager } from '../models/samLambdaRuntime'
+import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import {
     CreateNewSamAppWizard,
     CreateNewSamAppWizardResponse,
@@ -37,9 +35,7 @@ export async function resumeCreateNewSamApp(activationLaunchPath: ActivationLaun
             // This should never happen, as `pathToLaunch` will only be set if `uri` is in
             // the newly added workspace folder.
             vscode.window.showErrorMessage(
-                localize(
-                    'AWS.samcli.initWizard.source.error.notInWorkspace',
-                    "Could not open file '{0}'. If this file exists on disk, try adding it to your workspace.",
+                getLocalizedText(LocalizedIds.SAMCLI.InitWizard.SourceError.NotInWorkspace,
                     uri.fsPath
                 )
             )
@@ -155,9 +151,7 @@ async function getMainUri(
         return vscode.Uri.file(samTemplatePath)
     } else {
         vscode.window.showWarningMessage(
-            localize(
-                'AWS.samcli.initWizard.source.error.notFound',
-                'Project created successfully, but main source code file not found: {0}',
+            getLocalizedText(LocalizedIds.SAMCLI.InitWizard.SourceError.NotFound,
                 samTemplatePath
             )
         )
