@@ -8,10 +8,10 @@ import { Set } from 'immutable'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { samInitDocUrl } from '../../shared/constants'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { createHelpButton } from '../../shared/ui/buttons'
 import * as input from '../../shared/ui/input'
 import * as picker from '../../shared/ui/picker'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import {
     BrowseFolderQuickPickItem,
     FolderQuickPickItem,
@@ -37,7 +37,7 @@ export interface CreateNewSamAppWizardContext {
 
 export class DefaultCreateNewSamAppWizardContext extends WizardContext implements CreateNewSamAppWizardContext {
     public readonly lambdaRuntimes = lambdaRuntime.samLambdaRuntimes
-    private readonly helpButton = createHelpButton(getLocalizedText(LocalizedIds.Command.Help))
+    private readonly helpButton = createHelpButton(getLocalizedText(LOCALIZEDIDS.Command.Help))
 
     public constructor() {
         super()
@@ -47,7 +47,7 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: getLocalizedText(LocalizedIds.SAMCLI.InitWizard.RuntimePrompt),
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.RuntimePrompt),
                 value: currRuntime ? currRuntime : ''
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
@@ -58,7 +58,7 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
                     label: runtime,
                     alwaysShow: runtime === currRuntime,
                     description:
-                        runtime === currRuntime ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously) : ''
+                        runtime === currRuntime ? getLocalizedText(LOCALIZEDIDS.Wizard.SelectedPreviously) : ''
                 }))
         })
 
@@ -83,14 +83,14 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
             .concat([
                 new BrowseFolderQuickPickItem(
                     this,
-                    getLocalizedText(LocalizedIds.SAMCLI.InitWizard.LocationSelectFolderDetail)
+                    getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.LocationSelectFolderDetail)
                 )
             ])
 
         const quickPick = picker.createQuickPick({
             options: {
                 ignoreFocusOut: true,
-                title: getLocalizedText(LocalizedIds.SAMCLI.InitWizard.LocationPrompt)
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.LocationPrompt)
             },
             items: items,
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]
@@ -125,7 +125,7 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
     public async promptUserForName(): Promise<string | undefined> {
         const inputBox = input.createInputBox({
             options: {
-                title: getLocalizedText(LocalizedIds.SAMCLI.InitWizard.Name.Prompt),
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.Name.Prompt),
                 ignoreFocusOut: true
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]
@@ -135,11 +135,11 @@ export class DefaultCreateNewSamAppWizardContext extends WizardContext implement
             inputBox: inputBox,
             onValidateInput: (value: string) => {
                 if (!value) {
-                    return getLocalizedText(LocalizedIds.SAMCLI.InitWizard.Name.Error.Empty)
+                    return getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.Name.Error.Empty)
                 }
 
                 if (value.includes(path.sep)) {
-                    return getLocalizedText(LocalizedIds.SAMCLI.InitWizard.Name.Error.PathSep,
+                    return getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.Name.Error.PathSep,
                         path.sep
                     )
                 }

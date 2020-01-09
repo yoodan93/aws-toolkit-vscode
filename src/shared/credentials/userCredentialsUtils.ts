@@ -10,6 +10,7 @@ import { Credentials } from 'aws-sdk'
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service'
 import { writeFile } from 'fs-extra'
 import * as vscode from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { AwsContext } from '../awsContext'
 import { StsClient } from '../clients/stsClient'
 import { credentialHelpUrl } from '../constants'
@@ -19,7 +20,6 @@ import { mkdir } from '../filesystem'
 import { fileExists, readFileAsString } from '../filesystemUtilities'
 import { getLogger, Logger } from '../logger'
 import { SystemUtilities } from '../systemUtilities'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 /**
  * The payload used to fill in the handlebars template
@@ -214,9 +214,9 @@ export class UserCredentialsUtils {
     }
 
     public static async notifyUserCredentialsAreBad(profileName: string) {
-        const getHelp = getLocalizedText(LocalizedIds.Message.Credentials.InvalidProfileHelp)
+        const getHelp = getLocalizedText(LOCALIZEDIDS.Message.Credentials.InvalidProfileHelp)
         const selection = await vscode.window.showErrorMessage(
-            getLocalizedText(LocalizedIds.Message.Credentials.InvalidProfile, profileName),
+            getLocalizedText(LOCALIZEDIDS.Message.Credentials.InvalidProfile, profileName),
             getHelp
         )
 

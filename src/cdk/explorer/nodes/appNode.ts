@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {LocalizedIds, getLocalizedText} from '../../../shared/localizedIds'
 import * as path from 'path'
 import * as vscode from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../../../shared/localizedIds'
 import { getLogger } from '../../../shared/logger'
 import { AWSTreeNodeBase } from '../../../shared/treeview/nodes/awsTreeNodeBase'
 import { PlaceholderNode } from '../../../shared/treeview/nodes/placeholderNode'
@@ -68,7 +68,7 @@ export class AppNode extends AWSTreeNodeBase {
                 return [
                     new PlaceholderNode(
                         this,
-                        getLocalizedText(LocalizedIds.CDK.ExplorerNode.App.NoStacks)
+                        getLocalizedText(LOCALIZEDIDS.CDK.ExplorerNode.App.NoStacks)
                     )
                 ]
             }
@@ -80,7 +80,7 @@ export class AppNode extends AWSTreeNodeBase {
             return [
                 new PlaceholderNode(
                     this,
-                    getLocalizedText(LocalizedIds.CDK.ExplorerNode.App.NoConstructTree)
+                    getLocalizedText(LOCALIZEDIDS.CDK.ExplorerNode.App.NoConstructTree)
                 )
             ]
         }

@@ -6,19 +6,19 @@
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { NodejsDebugConfiguration } from '../../lambda/local/debugConfiguration'
+import { nodeJsRuntimes } from '../../lambda/models/samLambdaRuntime'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { CloudFormation } from '../cloudformation/cloudformation'
 import { findFileInParentPaths } from '../filesystemUtilities'
 import { LambdaHandlerCandidate } from '../lambdaHandlerSearch'
+import { getLogger } from '../logger'
+import { DefaultValidatingSamCliProcessInvoker } from '../sam/cli/defaultValidatingSamCliProcessInvoker'
 import { DefaultSamLocalInvokeCommand, WAIT_FOR_DEBUGGER_MESSAGES } from '../sam/cli/samCliLocalInvoke'
 import { Datum, TelemetryNamespace } from '../telemetry/telemetryTypes'
 import { registerCommand } from '../telemetry/telemetryUtils'
 import { TypescriptLambdaHandlerSearch } from '../typescriptLambdaHandlerSearch'
-import { getChannelLogger, getDebugPort } from '../utilities/vsCodeUtils'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
-import { nodeJsRuntimes } from '../../lambda/models/samLambdaRuntime'
-import { getLogger } from '../logger'
-import { DefaultValidatingSamCliProcessInvoker } from '../sam/cli/defaultValidatingSamCliProcessInvoker'
 import { normalizeSeparator } from '../utilities/pathUtils'
+import { getChannelLogger, getDebugPort } from '../utilities/vsCodeUtils'
 import { CodeLensProviderParams, getInvokeCmdKey, getMetricDatum, makeCodeLenses } from './codeLensUtils'
 import { getHandlerRelativePath, LambdaLocalInvokeParams, LocalLambdaRunner } from './localLambdaRunner'
 
@@ -26,7 +26,7 @@ async function getSamProjectDirPathForFile(filepath: string): Promise<string> {
     const packageJsonPath: string | undefined = await findFileInParentPaths(path.dirname(filepath), 'package.json')
     if (!packageJsonPath) {
         throw new Error( // TODO: Do we want to localize errors? This might be confusing if we need to review logs.
-            getLocalizedText(LocalizedIds.Error.SAMLocalPackageJSONNotFound,
+            getLocalizedText(LOCALIZEDIDS.Error.SAMLocalPackageJSONNotFound,
                 filepath
             )
         )
@@ -100,7 +100,7 @@ export function initialize({
                 )
 
                 vscode.window.showErrorMessage(
-                    getLocalizedText(LocalizedIds.SAMCLI.Local.Invoke.RuntimeUnsupported,
+                    getLocalizedText(LOCALIZEDIDS.SAMCLI.Local.Invoke.RuntimeUnsupported,
                         'javascript',
                         runtime
                     )

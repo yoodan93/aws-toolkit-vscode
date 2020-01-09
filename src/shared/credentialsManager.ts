@@ -6,13 +6,13 @@
 import * as AsyncLock from 'async-lock'
 import * as AWS from 'aws-sdk'
 import * as vscode from 'vscode'
-import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
+import {getLocalizedText, LOCALIZEDIDS} from '../shared/localizedIds'
 
 /**
  * @description Encapsulates the setup and caching of credentials profiles
  */
 export class CredentialsManager {
-    private static readonly userCancelledMfaError: string = getLocalizedText(LocalizedIds.Error.MFAUserCancelled)
+    private static readonly userCancelledMfaError: string = getLocalizedText(LOCALIZEDIDS.Error.MFAUserCancelled)
     private readonly _credentialsCache: { [key: string]: AWS.Credentials }
     private readonly _asyncLock: AsyncLock
 
@@ -75,8 +75,8 @@ export class CredentialsManager {
         try {
             const token = await vscode.window.showInputBox({
                 ignoreFocusOut: true,
-                placeHolder: getLocalizedText(LocalizedIds.PromptMFAEnterCode.Placeholder),
-                prompt: getLocalizedText(LocalizedIds.PromptMFAEnterCode.Prompt,
+                placeHolder: getLocalizedText(LOCALIZEDIDS.PromptMFAEnterCode.Placeholder),
+                prompt: getLocalizedText(LOCALIZEDIDS.PromptMFAEnterCode.Prompt,
                     profileName
                 )
             })

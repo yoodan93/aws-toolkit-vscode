@@ -6,9 +6,9 @@
 'use strict'
 
 import * as vscode from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { RefreshableAwsTreeProvider } from '../../shared/treeview/awsTreeProvider'
 import { AWSTreeNodeBase } from '../../shared/treeview/nodes/awsTreeNodeBase'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import { detectCdkProjects } from './detectCdkProjects'
 import { AppNode } from './nodes/appNode'
 import { CdkErrorNode } from './nodes/errorNode'
@@ -39,7 +39,7 @@ export class AwsCdkExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>,
             const appsFound = await detectCdkProjects(vscode.workspace.workspaceFolders)
 
             if (appsFound.length === 0) {
-                return [new CdkErrorNode(getLocalizedText(LocalizedIds.CDK.ExplorerNode.NoApps))]
+                return [new CdkErrorNode(getLocalizedText(LOCALIZEDIDS.CDK.ExplorerNode.NoApps))]
             }
 
             return appsFound.map(appLocation => new AppNode(appLocation))

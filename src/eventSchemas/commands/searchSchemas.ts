@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 import { Schemas } from 'aws-sdk'
 import _ = require('lodash')
 import path = require('path')
@@ -16,6 +15,7 @@ import { listRegistryItems, searchSchemas } from '../../eventSchemas/utils'
 import { SchemaClient } from '../../shared/clients/schemaClient'
 import { ext } from '../../shared/extensionGlobals'
 import { ExtensionUtilities } from '../../shared/extensionUtilities'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getLogger, Logger } from '../../shared/logger'
 import { TelemetryService } from '../../shared/telemetry/telemetryService'
 import { TelemetryNamespace } from '../../shared/telemetry/telemetryTypes'
@@ -24,7 +24,6 @@ import { BaseTemplates } from '../../shared/templates/baseTemplates'
 import { toArrayAsync } from '../../shared/utilities/collectionUtils'
 import { getTabSizeSetting } from '../../shared/utilities/editorUtilities'
 import { SchemaTemplates } from '../templates/searchSchemasTemplates'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export async function createSearchSchemasWebView(params: { node: RegistryItemNode | SchemasNode }) {
     const logger: Logger = getLogger()
@@ -32,7 +31,7 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
     const registryNames = await getRegistryNames(params.node, client)
 
     if (registryNames.length === 0) {
-        vscode.window.showInformationMessage(getLocalizedText(LocalizedIds.Schemas.Search.NoRegistries))
+        vscode.window.showInformationMessage(getLocalizedText(LOCALIZEDIDS.Schemas.Search.NoRegistries))
 
         return
     }
@@ -40,7 +39,7 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
     try {
         const view = vscode.window.createWebviewPanel(
             'html',
-            getLocalizedText(LocalizedIds.Schemas.Search.Title),
+            getLocalizedText(LOCALIZEDIDS.Schemas.Search.Title),
             vscode.ViewColumn.Active,
             {
                 enableScripts: true,
@@ -57,8 +56,8 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
         view.webview.html = baseTemplateFn({
             content: searchTemplate({
                 Header: getPageHeader(registryNames),
-                SearchInputPlaceholder: getLocalizedText(LocalizedIds.Schemas.Search.InputPlaceholder),
-                VersionPrefix: getLocalizedText(LocalizedIds.Schemas.Search.VersionPrefix),
+                SearchInputPlaceholder: getLocalizedText(LOCALIZEDIDS.Schemas.Search.InputPlaceholder),
+                VersionPrefix: getLocalizedText(LOCALIZEDIDS.Schemas.Search.VersionPrefix),
                 Scripts: loadScripts,
                 Libraries: loadLibs,
                 Stylesheets: loadStylesheets
@@ -67,10 +66,10 @@ export async function createSearchSchemasWebView(params: { node: RegistryItemNod
 
         view.webview.postMessage({
             command: 'setLocalizedMessages',
-            noSchemasFound: getLocalizedText(LocalizedIds.Schemas.Search.NoResults),
-            searching: getLocalizedText(LocalizedIds.Schemas.Search.Searching),
-            loading: getLocalizedText(LocalizedIds.Schemas.Search.Loading),
-            select: getLocalizedText(LocalizedIds.Schemas.Search.Select)
+            noSchemasFound: getLocalizedText(LOCALIZEDIDS.Schemas.Search.NoResults),
+            searching: getLocalizedText(LOCALIZEDIDS.Schemas.Search.Searching),
+            loading: getLocalizedText(LOCALIZEDIDS.Schemas.Search.Loading),
+            select: getLocalizedText(LOCALIZEDIDS.Schemas.Search.Select)
         })
 
         view.webview.onDidReceiveMessage(
@@ -100,7 +99,7 @@ export async function getRegistryNames(node: RegistryItemNode | SchemasNode, cli
             const error = err as Error
             getLogger().error(error)
             vscode.window.showErrorMessage(
-                getLocalizedText(LocalizedIds.Message.Error.Schemas.Search.FailedToLoadResources)
+                getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.Search.FailedToLoadResources)
             )
         }
     }
@@ -114,10 +113,10 @@ export async function getRegistryNames(node: RegistryItemNode | SchemasNode, cli
 
 export function getPageHeader(registryNames: string[]) {
     if (registryNames.length === 1) {
-        return getLocalizedText(LocalizedIds.Schemas.Search.HeaderTextSingleRegistry, registryNames[0])
+        return getLocalizedText(LOCALIZEDIDS.Schemas.Search.HeaderTextSingleRegistry, registryNames[0])
     }
 
-    return getLocalizedText(LocalizedIds.Schemas.Search.HeaderTextAllRegistries)
+    return getLocalizedText(LOCALIZEDIDS.Schemas.Search.HeaderTextAllRegistries)
 }
 
 export interface CommandMessage {
@@ -233,7 +232,7 @@ export async function getSearchListForSingleRegistry(
         getLogger().error(err)
 
         vscode.window.showErrorMessage(
-            getLocalizedText(LocalizedIds.Message.Error.Schemas.Search.FailedToSearchRegistry, registryName)
+            getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.Search.FailedToSearchRegistry, registryName)
         )
     }
 

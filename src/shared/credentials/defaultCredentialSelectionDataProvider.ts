@@ -12,11 +12,11 @@
 // Based on the multiStepInput code in the QuickInput VSCode extension sample.
 
 import { ExtensionContext, QuickPickItem } from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { MultiStepInputFlowController } from '../multiStepInputFlowController'
 import { CredentialSelectionDataProvider } from './credentialSelectionDataProvider'
 import { CredentialSelectionState } from './credentialSelectionState'
 import { CredentialsProfileMru } from './credentialsProfileMru'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 interface ProfileEntry {
     profileName: string
@@ -36,10 +36,10 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<QuickPickItem> {
         return await input.showQuickPick({
-            title: getLocalizedText(LocalizedIds.Title.SelectCredentialProfile),
+            title: getLocalizedText(LOCALIZEDIDS.Title.SelectCredentialProfile),
             step: 1,
             totalSteps: 1,
-            placeholder: getLocalizedText(LocalizedIds.Placeholder.SelectProfile),
+            placeholder: getLocalizedText(LOCALIZEDIDS.Placeholder.SelectProfile),
             items: this.getProfileSelectionList(),
             activeItem: state.credentialProfile,
             shouldResume: this.shouldResume.bind(this)
@@ -51,11 +51,11 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<string | undefined> {
         return await input.showInputBox({
-            title: getLocalizedText(LocalizedIds.Title.CreateCredentialProfile),
+            title: getLocalizedText(LOCALIZEDIDS.Title.CreateCredentialProfile),
             step: 1,
             totalSteps: 3,
             value: '',
-            prompt: getLocalizedText(LocalizedIds.Placeholder.NewProfilename),
+            prompt: getLocalizedText(LOCALIZEDIDS.Placeholder.NewProfilename),
             validate: this.validateNameIsUnique.bind(this),
             shouldResume: this.shouldResume.bind(this)
         })
@@ -66,11 +66,11 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<string | undefined> {
         return await input.showInputBox({
-            title: getLocalizedText(LocalizedIds.Title.CreateCredentialProfile),
+            title: getLocalizedText(LOCALIZEDIDS.Title.CreateCredentialProfile),
             step: 2,
             totalSteps: 3,
             value: '',
-            prompt: getLocalizedText(LocalizedIds.Placeholder.InputAccessKey),
+            prompt: getLocalizedText(LOCALIZEDIDS.Placeholder.InputAccessKey),
             validate: this.validateAccessKey.bind(this),
             ignoreFocusOut: true,
             shouldResume: this.shouldResume.bind(this)
@@ -82,11 +82,11 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
         state: Partial<CredentialSelectionState>
     ): Promise<string | undefined> {
         return await input.showInputBox({
-            title: getLocalizedText(LocalizedIds.Title.CreateCredentialProfile),
+            title: getLocalizedText(LOCALIZEDIDS.Title.CreateCredentialProfile),
             step: 3,
             totalSteps: 3,
             value: '',
-            prompt: getLocalizedText(LocalizedIds.Placeholder.InputSecretKey),
+            prompt: getLocalizedText(LOCALIZEDIDS.Placeholder.InputSecretKey),
             validate: this.validateSecretKey.bind(this),
             ignoreFocusOut: true,
             shouldResume: this.shouldResume.bind(this)
@@ -125,7 +125,7 @@ export class DefaultCredentialSelectionDataProvider implements CredentialSelecti
             const selectionItem: QuickPickItem = { label: profile.profileName }
 
             if (profile.isRecentlyUsed) {
-                selectionItem.description = getLocalizedText(LocalizedIds.ProfileRecentlyUsed)
+                selectionItem.description = getLocalizedText(LOCALIZEDIDS.ProfileRecentlyUsed)
             }
 
             selectionList.push(selectionItem)

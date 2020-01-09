@@ -5,10 +5,10 @@
 
 import * as vscode from 'vscode'
 import { AwsContext, ContextChangeEventsArgs } from '../shared/awsContext'
-import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
+import {getLocalizedText, LOCALIZEDIDS} from '../shared/localizedIds'
 
 const STATUSBAR_PRIORITY = 100
-const STATUSBAR_TEXT_NO_CREDENTIALS = getLocalizedText(LocalizedIds.CredentialsStatusBar.NoCredentials)
+const STATUSBAR_TEXT_NO_CREDENTIALS = getLocalizedText(LOCALIZEDIDS.CredentialsStatusBar.NoCredentials)
 
 export async function initializeAwsCredentialsStatusBarItem(
     awsContext: AwsContext,
@@ -16,7 +16,7 @@ export async function initializeAwsCredentialsStatusBarItem(
 ): Promise<void> {
     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, STATUSBAR_PRIORITY)
     statusBarItem.command = 'aws.login'
-    statusBarItem.tooltip = getLocalizedText(LocalizedIds.CredentialsStatusBar.Tooltip)
+    statusBarItem.tooltip = getLocalizedText(LOCALIZEDIDS.CredentialsStatusBar.Tooltip)
     statusBarItem.show()
 
     context.subscriptions.push(statusBarItem)
@@ -29,5 +29,5 @@ export async function initializeAwsCredentialsStatusBarItem(
 }
 
 export function updateCredentialsStatusBarItem(statusBarItem: vscode.StatusBarItem, credentialsId?: string) {
-    statusBarItem.text = getLocalizedText(LocalizedIds.CredentialsStatusBar.Text, credentialsId ?? STATUSBAR_TEXT_NO_CREDENTIALS)
+    statusBarItem.text = getLocalizedText(LOCALIZEDIDS.CredentialsStatusBar.Text, credentialsId ?? STATUSBAR_TEXT_NO_CREDENTIALS)
 }

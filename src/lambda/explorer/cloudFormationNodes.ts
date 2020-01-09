@@ -9,6 +9,7 @@ import * as vscode from 'vscode'
 import { CloudFormationClient } from '../../shared/clients/cloudFormationClient'
 import { LambdaClient } from '../../shared/clients/lambdaClient'
 import { ext } from '../../shared/extensionGlobals'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { AWSTreeNodeBase } from '../../shared/treeview/nodes/awsTreeNodeBase'
 import { ErrorNode } from '../../shared/treeview/nodes/errorNode'
 import { PlaceholderNode } from '../../shared/treeview/nodes/placeholderNode'
@@ -16,7 +17,6 @@ import { makeChildrenNodes } from '../../shared/treeview/treeNodeUtilities'
 import { intersection, toArrayAsync, toMap, toMapAsync, updateInPlace } from '../../shared/utilities/collectionUtils'
 import { listCloudFormationStacks, listLambdaFunctions } from '../utils'
 import { LambdaFunctionNode } from './lambdaFunctionNode'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export const CONTEXT_VALUE_CLOUDFORMATION_LAMBDA_FUNCTION = 'awsCloudFormationFunctionNode'
 
@@ -39,10 +39,10 @@ export class CloudFormationNode extends AWSTreeNodeBase {
                 new ErrorNode(
                     this,
                     error,
-                    getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.Error)
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.CloudFormation.Error)
                 ),
             getNoChildrenPlaceholderNode: async () =>
-                new PlaceholderNode(this, getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.NoStacks)),
+                new PlaceholderNode(this, getLocalizedText(LOCALIZEDIDS.ExplorerNode.CloudFormation.NoStacks)),
             sort: (nodeA: CloudFormationStackNode, nodeB: CloudFormationStackNode) =>
                 nodeA.stackName.localeCompare(nodeB.stackName)
         })
@@ -99,12 +99,12 @@ export class CloudFormationStackNode extends AWSTreeNodeBase {
                 new ErrorNode(
                     this,
                     error,
-                    getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.Error)
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.CloudFormation.Error)
                 ),
             getNoChildrenPlaceholderNode: async () =>
                 new PlaceholderNode(
                     this,
-                    getLocalizedText(LocalizedIds.ExplorerNode.CloudFormation.NoFunctions)
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.CloudFormation.NoFunctions)
                 ),
             sort: (nodeA: LambdaFunctionNode, nodeB: LambdaFunctionNode) =>
                 nodeA.functionName.localeCompare(nodeB.functionName)

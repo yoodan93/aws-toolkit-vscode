@@ -9,11 +9,11 @@ import path = require('path')
 import * as vscode from 'vscode'
 import { SchemaClient } from '../../shared/clients/schemaClient'
 import { makeTemporaryToolkitFolder } from '../../shared/filesystemUtilities'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getLogger, Logger } from '../../shared/logger'
 import { ExtensionDisposableFiles } from '../../shared/utilities/disposableFiles'
 import { SchemaItemNode } from '../explorer/schemaItemNode'
 import { getLanguageDetails } from '../models/schemaCodeLangs'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 import {
     DefaultSchemaCodeDownloadWizardContext,
@@ -44,7 +44,7 @@ export async function downloadSchemaItemCode(node: SchemaItemNode) {
         }
 
         vscode.window.showInformationMessage(
-            getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Start, node.schemaName)
+            getLocalizedText(LOCALIZEDIDS.Message.Info.SchemasDownloadCodeBindings.Start, node.schemaName)
         )
 
         const coreFileName = getCoreFileName(node.schemaName, getLanguageDetails(wizardResponse.language).extension)
@@ -59,7 +59,7 @@ export async function downloadSchemaItemCode(node: SchemaItemNode) {
         const schemaCodeDownloader = createSchemaCodeDownloaderObject(node.client)
         const coreCodeFilePath = await schemaCodeDownloader.downloadCode(request)
         vscode.window.showInformationMessage(
-            getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Finished, request.schemaName)
+            getLocalizedText(LOCALIZEDIDS.Message.Info.SchemasDownloadCodeBindings.Finished, request.schemaName)
         )
 
         if (coreCodeFilePath) {
@@ -67,7 +67,7 @@ export async function downloadSchemaItemCode(node: SchemaItemNode) {
         }
     } catch (err) {
         const error = err as Error
-        let errorMessage = getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.FailedToDownload)
+        let errorMessage = getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.DownloadCodeBindings.FailedToDownload)
 
         if (error instanceof UserNotifiedError && error.message) {
             errorMessage = error.message
@@ -119,7 +119,7 @@ export class SchemaCodeDownloader {
             if (error.stack && error.stack.includes('NotFoundException')) {
                 //If the code generation wasn't previously kicked off, do so
                 vscode.window.showInformationMessage(
-                    getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Generate, request.schemaName)
+                    getLocalizedText(LOCALIZEDIDS.Message.Info.SchemasDownloadCodeBindings.Generate, request.schemaName)
                 )
                 await this.generator.generate(request)
 
@@ -128,7 +128,7 @@ export class SchemaCodeDownloader {
 
                 //Download generated code bindings
                 vscode.window.showInformationMessage(
-                    getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Downloading, request.schemaName)
+                    getLocalizedText(LOCALIZEDIDS.Message.Info.SchemasDownloadCodeBindings.Downloading, request.schemaName)
                 )
                 zipContents = await this.downloader.download(request)
             } else {
@@ -136,7 +136,7 @@ export class SchemaCodeDownloader {
             }
         }
         vscode.window.showInformationMessage(
-            getLocalizedText(LocalizedIds.Message.Info.SchemasDownloadCodeBindings.Extracting, request.schemaName)
+            getLocalizedText(LOCALIZEDIDS.Message.Info.SchemasDownloadCodeBindings.Extracting, request.schemaName)
         )
 
         return await this.extractor.extractAndPlace(zipContents, request)
@@ -168,7 +168,7 @@ export class CodeGenerator {
             } else {
                 getLogger().error(error)
                 throw new UserNotifiedError(
-                    getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.FailedToGenerate)
+                    getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.DownloadCodeBindings.FailedToGenerate)
                 )
             }
         }
@@ -195,7 +195,7 @@ export class CodeGenerationStatusPoller {
             }
             if (codeGenerationStatus !== CodeGenerationStatus.CREATE_IN_PROGRESS) {
                 throw new UserNotifiedError(
-                    getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.InvalidCodeGenerationStatus,
+                    getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.DownloadCodeBindings.InvalidCodeGenerationStatus,
                         codeGenerationStatus ?? 'no status available'
                     )
                 )
@@ -204,7 +204,7 @@ export class CodeGenerationStatusPoller {
             await new Promise<void>(resolve => setTimeout(resolve, retryInterval))
         }
         throw new UserNotifiedError(
-            getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.Timeout, codeDownloadRequest.schemaName)
+            getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.DownloadCodeBindings.Timeout, codeDownloadRequest.schemaName)
         )
     }
 
@@ -293,7 +293,7 @@ export class CodeExtractor {
                 const intendedDestinationPath = path.join(destinationDirectory, '/', zipEntry.entryName)
                 if (fs.existsSync(intendedDestinationPath)) {
                     throw new UserNotifiedError(
-                        getLocalizedText(LocalizedIds.Message.Error.Schemas.DownloadCodeBindings.FailedToExtractCollision, zipEntry.name)
+                        getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.DownloadCodeBindings.FailedToExtractCollision, zipEntry.name)
                     )
                 }
             }

@@ -5,6 +5,7 @@
 
 import { Credentials } from 'aws-sdk'
 import { env, Uri, ViewColumn, window } from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../shared/localizedIds'
 import { AwsContext } from './awsContext'
 import { AwsContextTreeCollection } from './awsContextTreeCollection'
 import * as extensionConstants from './constants'
@@ -19,7 +20,6 @@ import { CredentialsValidationResult, UserCredentialsUtils } from './credentials
 import { ext } from './extensionGlobals'
 import { RegionInfo } from './regions/regionInfo'
 import { RegionProvider } from './regions/regionProvider'
-import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 export class DefaultAWSContextCommands {
     private readonly _awsContext: AwsContext
@@ -128,11 +128,11 @@ export class DefaultAWSContextCommands {
                 return state.profileName
             }
 
-            const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
-            const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
+            const responseNo: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.No)
+            const responseYes: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.Yes)
 
             const response = await window.showWarningMessage(
-                getLocalizedText(LocalizedIds.Message.Prompt.Credentials.DefinitionTryAgain,
+                getLocalizedText(LOCALIZEDIDS.Message.Prompt.Credentials.DefinitionTryAgain,
                     validationResult.invalidMessage!
                 ),
                 responseYes,
@@ -156,14 +156,14 @@ export class DefaultAWSContextCommands {
     private async getProfileNameFromUser(): Promise<string | undefined> {
         await new DefaultCredentialsFileReaderWriter().setCanUseConfigFileIfExists()
 
-        const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
-        const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
+        const responseYes: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.Yes)
+        const responseNo: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.No)
 
         const credentialsFiles: string[] = await UserCredentialsUtils.findExistingCredentialsFilenames()
 
         if (credentialsFiles.length === 0) {
             const userResponse = await window.showInformationMessage(
-                getLocalizedText(LocalizedIds.Message.Prompt.Credentials.Create),
+                getLocalizedText(LOCALIZEDIDS.Message.Prompt.Credentials.Create),
                 responseYes,
                 responseNo
             )
@@ -181,7 +181,7 @@ export class DefaultAWSContextCommands {
             // encouraged to define some.
             if (profileNames.length === 0) {
                 const userResponse = await window.showInformationMessage(
-                    getLocalizedText(LocalizedIds.Message.Prompt.Credentials.Create),
+                    getLocalizedText(LOCALIZEDIDS.Message.Prompt.Credentials.Create),
                     responseYes,
                     responseNo
                 )
@@ -225,10 +225,10 @@ export class DefaultAWSContextCommands {
             viewColumn = ViewColumn.Beside
         }
 
-        const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
-        const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
+        const responseNo: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.No)
+        const responseYes: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.Yes)
         const response = await window.showInformationMessage(
-            getLocalizedText(LocalizedIds.Message.Prompt.Credentials.DefinitionHelp),
+            getLocalizedText(LOCALIZEDIDS.Message.Prompt.Credentials.DefinitionHelp),
             responseYes,
             responseNo
         )
@@ -273,7 +273,7 @@ export class DefaultAWSContextCommands {
                 detail: r.regionCode
             }))
         const input = await window.showQuickPick(regionsToShow, {
-            placeHolder: getLocalizedText(LocalizedIds.Message.SelectRegion),
+            placeHolder: getLocalizedText(LOCALIZEDIDS.Message.SelectRegion),
             matchOnDetail: true
         })
 

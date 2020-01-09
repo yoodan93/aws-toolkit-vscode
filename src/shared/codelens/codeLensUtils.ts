@@ -6,6 +6,7 @@
 import * as vscode from 'vscode'
 
 import { detectLocalTemplates } from '../../lambda/local/detectLocalTemplates'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { CloudFormation } from '../cloudformation/cloudformation'
 import { LambdaHandlerCandidate } from '../lambdaHandlerSearch'
 import { getLogger } from '../logger'
@@ -15,7 +16,6 @@ import { SettingsConfiguration } from '../settingsConfiguration'
 import { TelemetryService } from '../telemetry/telemetryService'
 import { Datum } from '../telemetry/telemetryTypes'
 import { defaultMetricDatum } from '../telemetry/telemetryUtils'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export type Language = 'python' | 'javascript' | 'csharp'
 
@@ -103,8 +103,8 @@ function makeLocalInvokeCodeLens(
     params: MakeConfigureCodeLensParams & { isDebug: boolean; language: Language }
 ): vscode.CodeLens {
     const title: string = params.isDebug
-        ? getLocalizedText(LocalizedIds.CodelensLambda.InvokeDebug)
-        : getLocalizedText(LocalizedIds.CodelensLambda.Invoke)
+        ? getLocalizedText(LOCALIZEDIDS.CodelensLambda.InvokeDebug)
+        : getLocalizedText(LOCALIZEDIDS.CodelensLambda.Invoke)
 
     const command: vscode.Command = {
         arguments: [params],
@@ -129,7 +129,7 @@ function makeConfigureCodeLens({
     const command = {
         arguments: [workspaceFolder, handlerName, samTemplate],
         command: 'aws.configureLambda',
-        title: getLocalizedText(LocalizedIds.Command.ConfigureLambda)
+        title: getLocalizedText(LOCALIZEDIDS.Command.ConfigureLambda)
     }
 
     return new vscode.CodeLens(range, command)

@@ -5,10 +5,10 @@
 
 import * as AWS from 'aws-sdk'
 import * as vscode from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../shared/localizedIds'
 import { AwsContext, AwsContextCredentials, ContextChangeEventsArgs } from './awsContext'
 import { regionSettingKey } from './constants'
 import { CredentialsManager } from './credentialsManager'
-import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 
 // Wraps an AWS context in terms of credential profile and zero or more regions. The
 // context listens for configuration updates and resets the context accordingly.
@@ -68,7 +68,7 @@ export class DefaultAwsContext implements AwsContext {
             const error = err as Error
 
             vscode.window.showErrorMessage(
-                getLocalizedText(LocalizedIds.Message.Credentials.Error,
+                getLocalizedText(LOCALIZEDIDS.Message.Credentials.Error,
                     profile,
                     error.message
                 )

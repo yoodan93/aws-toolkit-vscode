@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
 import * as vscode from 'vscode'
 import { AwsContext } from '../shared/awsContext'
+import {getLocalizedText, LOCALIZEDIDS} from '../shared/localizedIds'
 import { RegionProvider } from '../shared/regions/regionProvider'
 import { RefreshableAwsTreeProvider } from '../shared/treeview/awsTreeProvider'
 import { AWSCommandTreeNode } from '../shared/treeview/nodes/awsCommandTreeNode'
@@ -37,7 +37,7 @@ export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, Re
                 return [
                     new AWSCommandTreeNode(
                         element,
-                        getLocalizedText(LocalizedIds.ExplorerNode.Lambda.Retry
+                        getLocalizedText(LOCALIZEDIDS.ExplorerNode.Lambda.Retry
                         ),
                         'aws.refreshAwsExplorerNode',
                         [this, element]
@@ -51,10 +51,10 @@ export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, Re
             return [
                 new AWSCommandTreeNode(
                     undefined,
-                    getLocalizedText(LocalizedIds.ExplorerNode.SignIn),
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.SignIn),
                     'aws.login',
                     undefined,
-                    getLocalizedText(LocalizedIds.ExplorerNode.SignInTooltip)
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.SignInTooltip)
                 )
             ]
         }
@@ -75,10 +75,10 @@ export class AwsExplorer implements vscode.TreeDataProvider<AWSTreeNodeBase>, Re
             return [
                 new AWSCommandTreeNode(
                     undefined,
-                    getLocalizedText(LocalizedIds.ExplorerNode.AddRegion),
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.AddRegion),
                     'aws.showRegion',
                     undefined,
-                    getLocalizedText(LocalizedIds.ExplorerNode.AddRegionTooltip)
+                    getLocalizedText(LOCALIZEDIDS.ExplorerNode.AddRegionTooltip)
                 )
             ]
         }

@@ -5,7 +5,6 @@
 
 import * as vscode from 'vscode'
 
-
 import { activate as activateAwsExplorer } from './awsexplorer/activation'
 import { activate as activateCdk } from './cdk/activation'
 import { initialize as initializeCredentials, loginWithMostRecentCredentials } from './credentials/activation'
@@ -21,6 +20,7 @@ import { DefaultAWSContextCommands } from './shared/defaultAwsContextCommands'
 import { DefaultResourceFetcher } from './shared/defaultResourceFetcher'
 import { ext } from './shared/extensionGlobals'
 import { showQuickStartWebview, toastNewUser } from './shared/extensionUtilities'
+import {getLocalizedText, LOCALIZEDIDS} from './shared/localizedIds'
 import { getLogger } from './shared/logger'
 import { activate as activateLogger } from './shared/logger/activation'
 import { DefaultRegionProvider } from './shared/regions/defaultRegionProvider'
@@ -32,13 +32,12 @@ import { TelemetryNamespace } from './shared/telemetry/telemetryTypes'
 import { registerCommand } from './shared/telemetry/telemetryUtils'
 import { ExtensionDisposableFiles } from './shared/utilities/disposableFiles'
 import { getChannelLogger } from './shared/utilities/vsCodeUtils'
-import {LocalizedIds, getLocalizedText} from './shared/localizedIds'
 
 export async function activate(context: vscode.ExtensionContext) {
 
     ext.context = context
     await activateLogger()
-    const toolkitOutputChannel = vscode.window.createOutputChannel(getLocalizedText(LocalizedIds.Channel.AWSToolkit))
+    const toolkitOutputChannel = vscode.window.createOutputChannel(getLocalizedText(LOCALIZEDIDS.Channel.AWSToolkit))
 
     try {
         await new DefaultCredentialsFileReaderWriter().setCanUseConfigFileIfExists()

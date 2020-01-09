@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {LocalizedIds, getLocalizedText} from '../shared/localizedIds'
+import {getLocalizedText, LOCALIZEDIDS} from '../shared/localizedIds'
 
 import * as vscode from 'vscode'
 import { AwsContext } from '../shared/awsContext'
@@ -33,10 +33,10 @@ enum OnDefaultRegionMissingOperation {
 }
 
 class DefaultRegionMissingPromptItems {
-    public static readonly add: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.Add)
-    public static readonly alwaysAdd: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.AlwaysAdd)
-    public static readonly ignore: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.Ignore)
-    public static readonly alwaysIgnore: string = getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.AlwaysIgnore)
+    public static readonly add: string = getLocalizedText(LOCALIZEDIDS.Message.Prompt.DefaultRegionHidden.Add)
+    public static readonly alwaysAdd: string = getLocalizedText(LOCALIZEDIDS.Message.Prompt.DefaultRegionHidden.AlwaysAdd)
+    public static readonly ignore: string = getLocalizedText(LOCALIZEDIDS.Message.Prompt.DefaultRegionHidden.Ignore)
+    public static readonly alwaysIgnore: string = getLocalizedText(LOCALIZEDIDS.Message.Prompt.DefaultRegionHidden.AlwaysIgnore)
 }
 
 export async function checkExplorerForDefaultRegion(
@@ -83,7 +83,7 @@ export async function checkExplorerForDefaultRegion(
             DefaultRegionMissingPromptItems.alwaysIgnore
         ],
         {
-            placeHolder: getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.CurrentlyHidden, profileRegion)
+            placeHolder: getLocalizedText(LOCALIZEDIDS.Message.Prompt.DefaultRegionHidden.CurrentlyHidden, profileRegion)
         }
     )
 
@@ -110,7 +110,7 @@ export async function checkExplorerForDefaultRegion(
                     : OnDefaultRegionMissingOperation.Ignore
             await config.update('onDefaultRegionMissing', action, vscode.ConfigurationTarget.Global)
             vscode.window.showInformationMessage(
-                getLocalizedText(LocalizedIds.Message.Prompt.DefaultRegionHidden.Suppressed, 'aws.onDefaultRegionMissing')
+                getLocalizedText(LOCALIZEDIDS.Message.Prompt.DefaultRegionHidden.Suppressed, 'aws.onDefaultRegionMissing')
             )
             break
     }

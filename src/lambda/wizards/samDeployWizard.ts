@@ -6,6 +6,7 @@
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { samDeployDocUrl } from '../../shared/constants'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getLogger } from '../../shared/logger'
 import { RegionProvider } from '../../shared/regions/regionProvider'
 import { createHelpButton } from '../../shared/ui/buttons'
@@ -16,7 +17,6 @@ import { MultiStepWizard, WizardStep } from '../../shared/wizards/multiStepWizar
 import { configureParameterOverrides } from '../config/configureParameterOverrides'
 import { detectLocalTemplates } from '../local/detectLocalTemplates'
 import { getOverriddenParameters, getParameters } from '../utilities/parameterUtils'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export interface SamDeployWizardResponse {
     parameterOverrides: Map<string, string>
@@ -119,7 +119,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
     public readonly onDetectLocalTemplates = detectLocalTemplates
     public readonly getParameters = getParameters
     public readonly getOverriddenParameters = getOverriddenParameters
-    private readonly helpButton = createHelpButton(getLocalizedText(LocalizedIds.Command.Help))
+    private readonly helpButton = createHelpButton(getLocalizedText(LOCALIZEDIDS.Command.Help))
 
     public constructor() {}
 
@@ -138,7 +138,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         const quickPick = picker.createQuickPick<SamTemplateQuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.TemplatePrompt)
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.TemplatePrompt)
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
             items: await getTemplateChoices(this.onDetectLocalTemplates, ...workspaceFolders)
@@ -167,11 +167,11 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         missingParameters?: Set<string>
     }): Promise<ParameterPromptResult> {
         if (missingParameters.size < 1) {
-            const prompt = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.OptionalPrompt.Message,
+            const prompt = getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Paramaters.OptionalPrompt.Message,
                 templateUri.fsPath
             )
-            const responseYes = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.OptionalPrompt.ResponseYes)
-            const responseNo = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.OptionalPrompt.ResponseNo)
+            const responseYes = getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Paramaters.OptionalPrompt.ResponseYes)
+            const responseNo = getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Paramaters.OptionalPrompt.ResponseNo)
 
             const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
                 options: {
@@ -204,11 +204,11 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
 
             return ParameterPromptResult.Cancel
         } else {
-            const prompt = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.MandatoryPrompt.Message,
+            const prompt = getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Paramaters.MandatoryPrompt.Message,
                 templateUri.fsPath
             )
-            const responseConfigure = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.MandatoryPrompt.ResponseConfigure)
-            const responseCancel = getLocalizedText(LocalizedIds.SAMCLI.Deploy.Paramaters.MandatoryPrompt.ResponseCancel)
+            const responseConfigure = getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Paramaters.MandatoryPrompt.ResponseConfigure)
+            const responseCancel = getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Paramaters.MandatoryPrompt.ResponseCancel)
 
             const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
                 options: {
@@ -249,7 +249,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
 
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
-                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.RegionPrompt),
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.RegionPrompt),
                 value: initialRegionCode || '',
                 matchOnDetail: true,
                 ignoreFocusOut: true
@@ -262,7 +262,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
                 alwaysShow: r.regionCode === initialRegionCode,
                 description:
                     r.regionCode === initialRegionCode
-                        ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously)
+                        ? getLocalizedText(LOCALIZEDIDS.Wizard.SelectedPreviously)
                         : ''
             })),
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]
@@ -294,9 +294,9 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         const inputBox = input.createInputBox({
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
             options: {
-                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Prompt),
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Prompt),
                 ignoreFocusOut: true,
-                prompt: getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Region,
+                prompt: getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Region,
                     selectedRegion
                 )
             }
@@ -338,7 +338,7 @@ export class DefaultSamDeployWizardContext implements SamDeployWizardContext {
         const inputBox = input.createInputBox({
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
             options: {
-                title: getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Prompt),
+                title: getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Stackname.Prompt),
                 ignoreFocusOut: true
             }
         })
@@ -532,31 +532,31 @@ class SamTemplateQuickPickItem implements vscode.QuickPickItem {
 // https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-s3-bucket-naming-requirements.html
 export function validateS3Bucket(value: string): string | undefined {
     if (value.length < 3 || value.length > 63) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.Length)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.Length)
     }
 
     if (!/^[a-z\d\.\-]+$/.test(value)) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.InvalidCharacters)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.InvalidCharacters)
     }
 
     if (/^\d+\.\d+\.\d+\.\d+$/.test(value)) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.IPAddress)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.IPAddress)
     }
 
     if (value[value.length - 1] === '-') {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.EndsWithDash)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.EndsWithDash)
     }
 
     if (value.includes('..')) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.ConsecutivePeriods)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.ConsecutivePeriods)
     }
 
     if (value.includes('.-') || value.includes('-.')) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.DashAdjacentPeriods)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.DashAdjacentPeriods)
     }
 
     if (value.split('.').some(label => !/^[a-z\d]/.test(label))) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.S3Bucket.Error.LabelFirstCharacter)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.S3Bucket.Error.LabelFirstCharacter)
     }
 
     return undefined
@@ -567,15 +567,15 @@ export function validateS3Bucket(value: string): string | undefined {
 // It must start with an alphabetic character and cannot be longer than 128 characters.
 function validateStackName(value: string): string | undefined {
     if (!/^[a-zA-Z\d\-]+$/.test(value)) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Error.InvalidCharacters)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Stackname.Error.InvalidCharacters)
     }
 
     if (!/^[a-zA-Z]/.test(value)) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Error.FirstCharacter)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Stackname.Error.FirstCharacter)
     }
 
     if (value.length > 128) {
-        return getLocalizedText(LocalizedIds.SAMCLI.Deploy.Stackname.Error.Length)
+        return getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Stackname.Error.Length)
     }
 
     // TODO: Validate that a stack with this name does not already exist.

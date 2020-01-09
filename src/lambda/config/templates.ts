@@ -12,10 +12,10 @@ import * as _path from 'path'
 import * as vscode from 'vscode'
 import { mkdir } from '../../shared/filesystem'
 import * as fsUtils from '../../shared/filesystemUtilities'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getLogger, Logger } from '../../shared/logger'
 import { getTabSizeSetting } from '../../shared/utilities/editorUtilities'
 import { saveDocumentIfDirty } from '../../shared/utilities/textDocumentUtilities'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 export interface TemplatesConfig {
     templates: {
         [relativePath: string]: TemplateConfig | undefined
@@ -120,7 +120,7 @@ export function showTemplatesConfigurationError(
     const logger: Logger = getLogger()
 
     showErrorMessage(
-        getLocalizedText(LocalizedIds.Lambda.ConfigureErrorFieldtype,
+        getLocalizedText(LOCALIZEDIDS.Lambda.ConfigureErrorFieldtype,
             error.jsonPath.join('.'),
             error.actualType,
             error.expectedTypes.join(', ')

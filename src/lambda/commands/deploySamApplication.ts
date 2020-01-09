@@ -9,6 +9,7 @@ import * as vscode from 'vscode'
 
 import { AwsContext, NoActiveCredentialError } from '../../shared/awsContext'
 import { makeTemporaryToolkitFolder } from '../../shared/filesystemUtilities'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { RegionProvider } from '../../shared/regions/regionProvider'
 import { SamCliBuildInvocation } from '../../shared/sam/cli/samCliBuild'
 import { getSamCliContext, SamCliContext } from '../../shared/sam/cli/samCliContext'
@@ -19,7 +20,6 @@ import { throwAndNotifyIfInvalid } from '../../shared/sam/cli/samCliValidationUt
 import { makeCheckLogsMessage } from '../../shared/utilities/messages'
 import { ChannelLogger } from '../../shared/utilities/vsCodeUtils'
 import { DefaultSamDeployWizardContext, SamDeployWizard, SamDeployWizardResponse } from '../wizards/samDeployWizard'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 interface DeploySamApplicationParameters {
     sourceTemplatePath: string
@@ -102,7 +102,7 @@ export async function deploySamApplication(
         )
 
         window.setStatusBarMessage(
-            getLocalizedText(LocalizedIds.SAMCLI.Deploy.StatusBarMessage,
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.StatusBarMessage,
                 deployWizardResponse.stackName
             ),
             deployApplicationPromise
@@ -234,13 +234,13 @@ async function deploy(params: {
         )
 
         params.window.showInformationMessage(
-            getLocalizedText(LocalizedIds.SAMCLI.Deploy.Workflow.SuccessGeneral)
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.SuccessGeneral)
         )
     } catch (err) {
         outputDeployError(err as Error, params.channelLogger)
 
         params.window.showErrorMessage(
-            getLocalizedText(LocalizedIds.SAMCLI.Deploy.Workflow.Error)
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Error)
         )
     }
 }

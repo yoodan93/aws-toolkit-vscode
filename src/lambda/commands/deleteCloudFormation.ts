@@ -3,19 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 import * as vscode from 'vscode'
 import { CloudFormationClient } from '../../shared/clients/cloudFormationClient'
 import { ext } from '../../shared/extensionGlobals'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getLogger, Logger } from '../../shared/logger'
 import { CloudFormationStackNode } from '../explorer/cloudFormationNodes'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export async function deleteCloudFormation(refresh: () => void, node?: CloudFormationStackNode) {
     const logger: Logger = getLogger()
     if (!node) {
         vscode.window.showErrorMessage(
-            getLocalizedText(LocalizedIds.Message.Error.CloudFormation.Unsupported)
+            getLocalizedText(LOCALIZEDIDS.Message.Error.CloudFormation.Unsupported)
         )
 
         return
@@ -23,12 +22,12 @@ export async function deleteCloudFormation(refresh: () => void, node?: CloudForm
 
     const stackName = node.stackName
 
-    const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
-    const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
+    const responseYes: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.Yes)
+    const responseNo: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.No)
 
     try {
         const userResponse = await vscode.window.showInformationMessage(
-            getLocalizedText(LocalizedIds.Message.Prompt.CloudFormationDelete, stackName),
+            getLocalizedText(LOCALIZEDIDS.Message.Prompt.CloudFormationDelete, stackName),
             responseYes,
             responseNo
         )
@@ -39,7 +38,7 @@ export async function deleteCloudFormation(refresh: () => void, node?: CloudForm
             await client.deleteStack(stackName)
 
             vscode.window.showInformationMessage(
-                getLocalizedText(LocalizedIds.Message.Info.CloudFormationDelete, stackName)
+                getLocalizedText(LOCALIZEDIDS.Message.Info.CloudFormationDelete, stackName)
             )
 
             refresh()
@@ -48,7 +47,7 @@ export async function deleteCloudFormation(refresh: () => void, node?: CloudForm
         const error = err as Error
 
         vscode.window.showInformationMessage(
-            getLocalizedText(LocalizedIds.Message.Error.CloudFormation.Delete,
+            getLocalizedText(LOCALIZEDIDS.Message.Error.CloudFormation.Delete,
                 stackName
             )
         )

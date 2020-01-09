@@ -5,8 +5,8 @@
 
 import { Set } from 'immutable'
 import * as vscode from 'vscode'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import { schemaCodeDownloadDocUrl } from '../../shared/constants'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { createHelpButton } from '../../shared/ui/buttons'
 
 import * as picker from '../../shared/ui/picker'
@@ -38,7 +38,7 @@ export interface SchemaCodeDownloadWizardContext {
 
 export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implements SchemaCodeDownloadWizardContext {
     public readonly schemaLangs = codeLang.schemaCodeLangs
-    private readonly helpButton = createHelpButton(getLocalizedText(LocalizedIds.Command.Help))
+    private readonly helpButton = createHelpButton(getLocalizedText(LOCALIZEDIDS.Command.Help))
     public constructor(private readonly node: SchemaItemNode) {
         super()
         this.node = node
@@ -50,7 +50,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.LanguagePrompt),
+                title: getLocalizedText(LOCALIZEDIDS.Schemas.DownloadCodeBindings.InitWizard.LanguagePrompt),
                 value: currLanguage ? currLanguage : ''
             },
             buttons: [this.helpButton, vscode.QuickInputButtons.Back],
@@ -58,7 +58,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
                 label: language,
                 alwaysShow: language === currLanguage,
                 description:
-                    language === currLanguage ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously) : ''
+                    language === currLanguage ? getLocalizedText(LOCALIZEDIDS.Wizard.SelectedPreviously) : ''
             }))
         })
 
@@ -83,7 +83,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
         const quickPick = picker.createQuickPick<vscode.QuickPickItem>({
             options: {
                 ignoreFocusOut: true,
-                title: getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.VersionPrompt,
+                title: getLocalizedText(LOCALIZEDIDS.Schemas.DownloadCodeBindings.InitWizard.VersionPrompt,
                     this.node.schemaName
                 ),
                 value: currSchemaVersion ? currSchemaVersion : ''
@@ -94,7 +94,7 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
                 alwaysShow: schemaVersion.SchemaVersion === currSchemaVersion,
                 description:
                     schemaVersion === currSchemaVersion
-                        ? getLocalizedText(LocalizedIds.Wizard.SelectedPreviously)
+                        ? getLocalizedText(LOCALIZEDIDS.Wizard.SelectedPreviously)
                         : ''
             }))
         })
@@ -120,14 +120,14 @@ export class DefaultSchemaCodeDownloadWizardContext extends WizardContext implem
             .concat([
                 new BrowseFolderQuickPickItem(
                     this,
-                    getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.LocationSelectFolderDetail)
+                    getLocalizedText(LOCALIZEDIDS.Schemas.DownloadCodeBindings.InitWizard.LocationSelectFolderDetail)
                 )
             ])
 
         const quickPick = picker.createQuickPick({
             options: {
                 ignoreFocusOut: true,
-                title: getLocalizedText(LocalizedIds.Schemas.DownloadCodeBindings.InitWizard.LocationPrompt)
+                title: getLocalizedText(LOCALIZEDIDS.Schemas.DownloadCodeBindings.InitWizard.LocationPrompt)
             },
             items: items,
             buttons: [this.helpButton, vscode.QuickInputButtons.Back]

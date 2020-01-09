@@ -11,11 +11,11 @@ import { listSchemaItems } from '../utils'
 
 import { SchemaClient } from '../../shared/clients/schemaClient'
 import { ext } from '../../shared/extensionGlobals'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { AWSTreeErrorHandlerNode } from '../../shared/treeview/nodes/awsTreeErrorHandlerNode'
 import { PlaceholderNode } from '../../shared/treeview/nodes/placeholderNode'
 import { toMapAsync, updateInPlace } from '../../shared/utilities/collectionUtils'
 import { SchemaItemNode } from './schemaItemNode'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export class RegistryItemNode extends AWSTreeErrorHandlerNode {
     private readonly schemaNodes: Map<string, SchemaItemNode>
@@ -35,14 +35,14 @@ export class RegistryItemNode extends AWSTreeErrorHandlerNode {
     public get registryName(): string {
         return (
             this.registryItemOutput.RegistryName ||
-            getLocalizedText(LocalizedIds.ExplorerNode.Registry.RegistryNameNotFound)
+            getLocalizedText(LOCALIZEDIDS.ExplorerNode.Registry.RegistryNameNotFound)
         )
     }
 
     public async getChildren(): Promise<(SchemaItemNode | PlaceholderNode)[]> {
         await this.handleErrorProneOperation(
             async () => this.updateChildren(),
-            getLocalizedText(LocalizedIds.ExplorerNode.Registry.Error)
+            getLocalizedText(LOCALIZEDIDS.ExplorerNode.Registry.Error)
         )
 
         if (this.errorNode) {
@@ -56,7 +56,7 @@ export class RegistryItemNode extends AWSTreeErrorHandlerNode {
         }
 
         return [
-            new PlaceholderNode(this, getLocalizedText(LocalizedIds.ExplorerNode.Registry.NoSchemas))
+            new PlaceholderNode(this, getLocalizedText(LOCALIZEDIDS.ExplorerNode.Registry.NoSchemas))
         ]
     }
 

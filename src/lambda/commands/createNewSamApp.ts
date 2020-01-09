@@ -7,6 +7,7 @@ import * as path from 'path'
 import * as vscode from 'vscode'
 import { ActivationLaunchPath } from '../../shared/activationLaunchPath'
 import { fileExists } from '../../shared/filesystemUtilities'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getSamCliContext, SamCliContext } from '../../shared/sam/cli/samCliContext'
 import { runSamCliInit, SamCliInitArgs } from '../../shared/sam/cli/samCliInit'
 import { throwAndNotifyIfInvalid } from '../../shared/sam/cli/samCliValidationUtils'
@@ -16,7 +17,6 @@ import { makeCheckLogsMessage } from '../../shared/utilities/messages'
 import { ChannelLogger } from '../../shared/utilities/vsCodeUtils'
 import { addFolderToWorkspace } from '../../shared/utilities/workspaceUtils'
 import { getDependencyManager } from '../models/samLambdaRuntime'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 import {
     CreateNewSamAppWizard,
     CreateNewSamAppWizardResponse,
@@ -35,7 +35,7 @@ export async function resumeCreateNewSamApp(activationLaunchPath: ActivationLaun
             // This should never happen, as `pathToLaunch` will only be set if `uri` is in
             // the newly added workspace folder.
             vscode.window.showErrorMessage(
-                getLocalizedText(LocalizedIds.SAMCLI.InitWizard.SourceError.NotInWorkspace,
+                getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.SourceError.NotInWorkspace,
                     uri.fsPath
                 )
             )
@@ -151,7 +151,7 @@ async function getMainUri(
         return vscode.Uri.file(samTemplatePath)
     } else {
         vscode.window.showWarningMessage(
-            getLocalizedText(LocalizedIds.SAMCLI.InitWizard.SourceError.NotFound,
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.SourceError.NotFound,
                 samTemplatePath
             )
         )

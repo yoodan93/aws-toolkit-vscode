@@ -5,19 +5,16 @@
 
 import * as vscode from 'vscode'
 
-
 import { LambdaClient } from '../../shared/clients/lambdaClient'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
-
-
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 
 /**
  * @param message: Message displayed to user
  */
 const confirm = async (message: string): Promise<boolean> => {
     // TODO: Re-use `confirm` throughout package (rather than cutting and pasting logic).
-    const responseNo: string = getLocalizedText(LocalizedIds.GenericResponse.No)
-    const responseYes: string = getLocalizedText(LocalizedIds.GenericResponse.Yes)
+    const responseNo: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.No)
+    const responseYes: string = getLocalizedText(LOCALIZEDIDS.GenericResponse.Yes)
     const response = await vscode.window.showWarningMessage(message, responseYes, responseNo)
 
     return response === responseYes
@@ -27,7 +24,7 @@ export async function deleteLambda({
     deleteParams,
     onConfirm = async () => {
         return await confirm(
-            getLocalizedText(LocalizedIds.Command.DeleteLambdaConfirm,
+            getLocalizedText(LOCALIZEDIDS.Command.DeleteLambdaConfirm,
                 deleteParams.functionName
             )
         )
@@ -52,7 +49,7 @@ export async function deleteLambda({
     } catch (err) {
         restParams.outputChannel.show(true)
         restParams.outputChannel.appendLine(
-            getLocalizedText(LocalizedIds.Command.DeleteLambdaError,
+            getLocalizedText(LOCALIZEDIDS.Command.DeleteLambdaError,
                 deleteParams.functionName
             )
         )

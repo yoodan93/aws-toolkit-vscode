@@ -4,10 +4,10 @@
  */
 
 import * as vscode from 'vscode'
+import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
 import { getLogger, Logger } from '../../shared/logger'
 import { getTabSizeSetting } from '../../shared/utilities/editorUtilities'
 import { SchemaItemNode } from '../explorer/schemaItemNode'
-import {LocalizedIds, getLocalizedText} from '../../shared/localizedIds'
 
 export async function viewSchemaItem(node: SchemaItemNode) {
     const logger: Logger = getLogger()
@@ -18,7 +18,7 @@ export async function viewSchemaItem(node: SchemaItemNode) {
     } catch (err) {
         const error = err as Error
         vscode.window.showErrorMessage(
-            getLocalizedText(LocalizedIds.Message.Error.Schemas.ViewSchemaCouldNotOpen, node.schemaName)
+            getLocalizedText(LOCALIZEDIDS.Message.Error.Schemas.ViewSchemaCouldNotOpen, node.schemaName)
         )
         logger.error('Error on schema preview', error)
     }
