@@ -4,12 +4,12 @@
  */
 
 import * as assert from 'assert'
+import { getLocalizedText } from '../../../shared/localizedIds'
 import { Loggable, LogLevel } from '../../../shared/logger'
 import { isLoggableError } from '../../../shared/logger/loggableType'
 import {
     ChannelLogger,
     getChannelLogger,
-    localize,
     processTemplate,
     TemplateHandler,
     TemplateParams
@@ -38,44 +38,40 @@ interface TestData extends TemplateParams {
 const testData: TestData[] = [
     {
         title: 'logs w/o template params',
-        nlsKey: 'silly.key1',
-        nlsTemplate: 'Yay',
+        localizedString: { id: 'silly.id1', defaultText: 'Yay' },
         templateTokens: undefined
     },
     {
         title: 'logs with 1 string template param',
-        nlsKey: 'silly.key2',
-        nlsTemplate: "Nice to meet you '{0}'",
+        localizedString: { id: 'silly.id2', defaultText: "Nice to meet you '{0}'" },
         templateTokens: ['bob']
     },
     {
         title: 'logs with 2 string template params',
-        nlsKey: 'silly.key3',
-        nlsTemplate: "Hey '{0}', meet '{1}'",
+        localizedString: { id: 'silly.id3', defaultText: "Hey '{0}', meet '{1}'" },
         templateTokens: ['bob', 'joe']
     },
     {
         title: 'logs with 3 string template params',
-        nlsKey: 'silly.key4',
-        nlsTemplate: "Hey '{0}', meet '{1}' and '{2}",
+        localizedString: { id: 'silly.id4', defaultText: "Hey '{0}', meet '{1}' and '{2}" },
         templateTokens: ['bob', 'joe', 'kim']
     },
     {
         title: 'logs with 2 template params: errro, string',
-        nlsKey: 'silly.key5',
-        nlsTemplate: "Oh no '{1}', we found an error: '{0}'",
+        localizedString: { id: 'silly.id5', defaultText: "Oh no '{1}', we found an error: '{0}'" },
         templateTokens: [new Error('Stock market crash'), 'joe']
     },
     {
         title: 'logs with 2 template params: error, error',
-        nlsKey: 'silly.key6',
-        nlsTemplate: "1st Error '{0}'; 2nd error: '{1}'",
+        localizedString: { id: 'silly.id6', defaultText: "1st Error '{0}'; 2nd error: '{1}'" },
         templateTokens: [new Error('Error zero'), new Error('Error one')]
     },
     {
         title: 'logs with 3 template params: string, error, error',
-        nlsKey: 'silly.key7',
-        nlsTemplate: "Oh my '{0}', there are errors: 1st Error '{1}'; 2nd error: '{2}'",
+        localizedString: {
+            id: 'silly.id7',
+            defaultText: "Oh my '{0}', there are errors: 1st Error '{1}'; 2nd error: '{2}'"
+        },
         templateTokens: ['Bob', new Error('Error zero'), new Error('Error one')]
     }
 ]
@@ -105,11 +101,7 @@ describe('getChannelLogger', function() {
                         }
                     })
                 }
-                const expectedPrettyMsg = localize(
-                    testDataCase.nlsKey,
-                    testDataCase.nlsTemplate,
-                    ...expectedPrettyTokens
-                )
+                const expectedPrettyMsg = getLocalizedText(testDataCase.localizedString, ...expectedPrettyTokens)
 
                 await onRunTest({
                     logLevel,
@@ -131,8 +123,7 @@ describe('getChannelLogger', function() {
     }: TestCaseParams) => {
         // Log message to channel
         ;((channelLogger as unknown) as { [logLevel: string]: TemplateHandler })[logLevel](
-            testDataCase.nlsKey,
-            testDataCase.nlsTemplate,
+            testDataCase.localizedString,
             ...(testDataCase.templateTokens || [])
         )
         const actualLogEntries = logger.getLoggedEntries(logLevel)
@@ -152,8 +143,7 @@ describe('getChannelLogger', function() {
     }: TestCaseParams) => {
         // Log message to channel
         ;((channelLogger as unknown) as { [logLevel: string]: TemplateHandler })[logLevel](
-            testDataCase.nlsKey,
-            testDataCase.nlsTemplate,
+            testDataCase.localizedString,
             ...(testDataCase.templateTokens || [])
         )
 

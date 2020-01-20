@@ -4,8 +4,8 @@
  */
 
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
 
+import { getLocalizedText, LOCALIZEDIDS } from '../../../shared/localizedIds'
 import { samAboutInstallUrl, vscodeMarketplaceUrl } from '../../constants'
 import {
     InvalidSamCliError,
@@ -17,18 +17,10 @@ import {
     SamCliVersionValidatorResult
 } from './samCliValidator'
 
-const localize = nls.loadMessageBundle()
-
 // Messages
-const RECOMMENDATION_UPDATE_TOOLKIT: string = localize(
-    'AWS.samcli.recommend.update.toolkit',
-    'Please check the Marketplace for an updated Toolkit.'
-)
+const RECOMMENDATION_UPDATE_TOOLKIT: string = getLocalizedText(LOCALIZEDIDS.SAMCLI.RecommendUpdate.Toolkit)
 
-const RECOMMENDATION_UPDATE_SAM_CLI: string = localize(
-    'AWS.samcli.recommend.update.samcli',
-    'Please update your SAM CLI.'
-)
+const RECOMMENDATION_UPDATE_SAM_CLI: string = getLocalizedText(LOCALIZEDIDS.SAMCLI.RecommendUpdate.SAMCLI)
 
 // Notification Actions
 export interface SamCliValidationNotificationAction {
@@ -37,14 +29,14 @@ export interface SamCliValidationNotificationAction {
 }
 
 const actionGoToSamCli: SamCliValidationNotificationAction = {
-    label: localize('AWS.samcli.userChoice.visit.install.url', 'Get SAM CLI'),
+    label: getLocalizedText(LOCALIZEDIDS.SAMCLI.UserChoice.VisitInstallURL),
     invoke: async () => {
         await vscode.env.openExternal(vscode.Uri.parse(samAboutInstallUrl))
     }
 }
 
 const actionGoToVsCodeMarketplace: SamCliValidationNotificationAction = {
-    label: localize('AWS.samcli.userChoice.update.awstoolkit.url', 'Visit Marketplace'),
+    label: getLocalizedText(LOCALIZEDIDS.SAMCLI.UserChoice.UpdateAwstoolkitURL),
     invoke: async () => {
         // TODO : Switch to the Extension panel in VS Code instead
         await vscode.env.openExternal(vscode.Uri.parse(vscodeMarketplaceUrl))
@@ -97,13 +89,7 @@ export function makeSamCliValidationNotification(
         new DefaultSamCliValidationNotification(message, actions)
 ): SamCliValidationNotification {
     if (samCliValidationError instanceof SamCliNotFoundError) {
-        return onCreateNotification(
-            localize(
-                'AWS.samcli.notification.not.found',
-                'Unable to find SAM CLI. It is required in order to work with Serverless Applications locally.'
-            ),
-            [actionGoToSamCli]
-        )
+        return onCreateNotification(getLocalizedText(LOCALIZEDIDS.SAMCLI.Notification.NotFound), [actionGoToSamCli])
     } else if (samCliValidationError instanceof InvalidSamCliVersionError) {
         return onCreateNotification(
             makeVersionValidationNotificationMessage(samCliValidationError.versionValidation),
@@ -111,11 +97,7 @@ export function makeSamCliValidationNotification(
         )
     } else {
         return onCreateNotification(
-            localize(
-                'AWS.samcli.notification.unexpected.validation.issue',
-                'An unexpected issue occured while validating SAM CLI: {0}',
-                samCliValidationError.message
-            ),
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.Notification.UnexpectedValidationIssue, samCliValidationError.message),
             []
         )
     }
@@ -127,10 +109,9 @@ function makeVersionValidationNotificationMessage(validationResult: SamCliVersio
             ? RECOMMENDATION_UPDATE_TOOLKIT
             : RECOMMENDATION_UPDATE_SAM_CLI
 
-    return localize(
-        'AWS.samcli.notification.version.invalid',
-        'Your SAM CLI version {0} does not meet requirements ({1}\u00a0\u2264\u00a0version\u00a0<\u00a0{2}). {3}',
-        validationResult.version,
+    return getLocalizedText(
+        LOCALIZEDIDS.SAMCLI.Notification.VersionInvalid,
+        validationResult.version ?? '',
         MINIMUM_SAM_CLI_VERSION_INCLUSIVE,
         MAXIMUM_SAM_CLI_VERSION_EXCLUSIVE,
         recommendation

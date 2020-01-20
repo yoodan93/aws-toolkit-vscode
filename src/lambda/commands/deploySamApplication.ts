@@ -9,7 +9,7 @@ import * as vscode from 'vscode'
 
 import { AwsContext, NoActiveCredentialError } from '../../shared/awsContext'
 import { makeTemporaryToolkitFolder } from '../../shared/filesystemUtilities'
-import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
+import { getLocalizedText, LOCALIZEDIDS } from '../../shared/localizedIds'
 import { RegionProvider } from '../../shared/regions/regionProvider'
 import { SamCliBuildInvocation } from '../../shared/sam/cli/samCliBuild'
 import { getSamCliContext, SamCliContext } from '../../shared/sam/cli/samCliContext'
@@ -102,9 +102,7 @@ export async function deploySamApplication(
         )
 
         window.setStatusBarMessage(
-            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.StatusBarMessage,
-                deployWizardResponse.stackName
-            ),
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.StatusBarMessage, deployWizardResponse.stackName),
             deployApplicationPromise
         )
     } catch (err) {
@@ -131,7 +129,7 @@ async function buildOperation(params: {
     invoker: SamCliProcessInvoker
     channelLogger: ChannelLogger
 }): Promise<void> {
-    params.channelLogger.info('AWS.samcli.deploy.workflow.init', 'Building SAM Application...')
+    params.channelLogger.info(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Init)
 
     const buildDestination = getBuildRootFolder(params.deployParameters.deployRootFolder)
 
@@ -151,8 +149,7 @@ async function packageOperation(params: {
     channelLogger: ChannelLogger
 }): Promise<void> {
     params.channelLogger.info(
-        'AWS.samcli.deploy.workflow.packaging',
-        'Packaging SAM Application to S3 Bucket: {0} with profile: {1}',
+        LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Packaging,
         params.deployParameters.packageBucketName,
         params.deployParameters.profile
     )
@@ -180,8 +177,7 @@ async function deployOperation(params: {
 }): Promise<void> {
     try {
         params.channelLogger.info(
-            'AWS.samcli.deploy.workflow.stackName.initiated',
-            'Deploying SAM Application to CloudFormation Stack: {0} with profile: {1}',
+            LOCALIZEDIDS.SAMCLI.Deploy.Workflow.StackNameInitiated,
             params.deployParameters.destinationStackName,
             params.deployParameters.profile
         )
@@ -220,28 +216,23 @@ async function deploy(params: {
 }): Promise<void> {
     try {
         params.channelLogger.channel.show(true)
-        params.channelLogger.info('AWS.samcli.deploy.workflow.start', 'Starting SAM Application deployment...')
+        params.channelLogger.info(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Start)
 
         await buildOperation(params)
         await packageOperation(params)
         await deployOperation(params)
 
         params.channelLogger.info(
-            'AWS.samcli.deploy.workflow.success',
-            'Successfully deployed SAM Application to CloudFormation Stack: {0} with profile: {1}',
+            LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Success,
             params.deployParameters.destinationStackName,
             params.deployParameters.profile
         )
 
-        params.window.showInformationMessage(
-            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.SuccessGeneral)
-        )
+        params.window.showInformationMessage(getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.SuccessGeneral))
     } catch (err) {
         outputDeployError(err as Error, params.channelLogger)
 
-        params.window.showErrorMessage(
-            getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Error)
-        )
+        params.window.showErrorMessage(getLocalizedText(LOCALIZEDIDS.SAMCLI.Deploy.Workflow.Error))
     }
 }
 
@@ -278,11 +269,7 @@ function outputDeployError(error: Error, channelLogger: ChannelLogger) {
     const checkLogsMessage = makeCheckLogsMessage()
 
     channelLogger.channel.show(true)
-    channelLogger.error(
-        'AWS.samcli.deploy.general.error',
-        'An error occurred while deploying a SAM Application. {0}',
-        checkLogsMessage
-    )
+    channelLogger.error(LOCALIZEDIDS.SAMCLI.Deploy.GeneralError, checkLogsMessage)
 }
 
 function getDefaultWindowFunctions(): WindowFunctions {

@@ -8,6 +8,7 @@ import * as tcpPortUsed from 'tcp-port-used'
 import * as vscode from 'vscode'
 import { getLocalLambdaConfiguration } from '../../lambda/local/configureLocalLambda'
 import { detectLocalLambdas, LocalLambda } from '../../lambda/local/detectLocalLambdas'
+import { LOCALIZEDIDS } from '../../shared/localizedIds'
 import { CloudFormation } from '../cloudformation/cloudformation'
 import { makeTemporaryToolkitFolder } from '../filesystemUtilities'
 import { SamCliBuildInvocation, SamCliBuildInvocationArguments } from '../sam/cli/samCliBuild'
@@ -83,11 +84,7 @@ export class LocalLambdaRunner {
             // Switch over to the output channel so the user has feedback that we're getting things ready
             this.channelLogger.channel.show(true)
 
-            this.channelLogger.info(
-                'AWS.output.sam.local.start',
-                'Preparing to run {0} locally...',
-                this.localInvokeParams.handlerName
-            )
+            this.channelLogger.info(LOCALIZEDIDS.Output.SAMLocal.Start, this.localInvokeParams.handlerName)
 
             const inputTemplate: string = await this.generateInputTemplate(this.codeRootDirectoryPath)
             const samBuildTemplate: string = await executeSamBuild({
@@ -101,11 +98,7 @@ export class LocalLambdaRunner {
             await this.invokeLambdaFunction(samBuildTemplate)
         } catch (err) {
             const error = err as Error
-            this.channelLogger.error(
-                'AWS.error.during.sam.local',
-                'An error occurred trying to run SAM Application locally: {0}',
-                error
-            )
+            this.channelLogger.error(LOCALIZEDIDS.Error.DuringSAMLocal, error)
 
             return
         }
@@ -169,10 +162,7 @@ export class LocalLambdaRunner {
      * @param samTemplatePath sam template to run locally
      */
     private async invokeLambdaFunction(samTemplatePath: string): Promise<void> {
-        this.channelLogger.info(
-            'AWS.output.starting.sam.app.locally',
-            'Starting the SAM Application locally (see Terminal for output)'
-        )
+        this.channelLogger.info(LOCALIZEDIDS.Output.StartingSAMAppLocally)
 
         const eventPath: string = path.join(await this.getBaseBuildFolder(), 'event.json')
         const environmentVariablePath = path.join(await this.getBaseBuildFolder(), 'env-vars.json')
@@ -328,7 +318,7 @@ export async function executeSamBuild({
     environmentVariables,
     samProcessInvoker
 }: ExecuteSamBuildArguments): Promise<string> {
-    channelLogger.info('AWS.output.building.sam.application', 'Building SAM Application...')
+    channelLogger.info(LOCALIZEDIDS.Output.BuildingSAMApplication)
 
     const samBuildOutputFolder = path.join(baseBuildDir, 'output')
 
@@ -342,7 +332,7 @@ export async function executeSamBuild({
     }
     await new SamCliBuildInvocation(samCliArgs).execute()
 
-    channelLogger.info('AWS.output.building.sam.application.complete', 'Build complete.')
+    channelLogger.info(LOCALIZEDIDS.Output.BuildingSAMApplicationComplete)
 
     return path.join(samBuildOutputFolder, 'template.yaml')
 }
@@ -382,10 +372,7 @@ export async function invokeLambdaFunction(
         onWillAttachDebugger
     }: InvokeLambdaFunctionContext
 ): Promise<void> {
-    channelLogger.info(
-        'AWS.output.starting.sam.app.locally',
-        'Starting the SAM Application locally (see Terminal for output)'
-    )
+    channelLogger.info(LOCALIZEDIDS.Output.StartingSAMAppLocally)
     channelLogger.logger.debug(`localLambdaRunner.invokeLambdaFunction: ${JSON.stringify(invokeArgs, undefined, 2)}`)
 
     const eventPath: string = path.join(invokeArgs.baseBuildDir, 'event.json')
@@ -513,7 +500,7 @@ export async function attachDebugger({
     let isDebuggerAttached: boolean | undefined
     let retries = 0
 
-    channelLogger.info('AWS.output.sam.local.attaching', 'Attaching debugger to SAM Application...')
+    channelLogger.info(LOCALIZEDIDS.Output.SAMLocal.Attaching)
 
     do {
         isDebuggerAttached = await onStartDebugging(undefined, params.debugConfig)
@@ -525,10 +512,7 @@ export async function attachDebugger({
                 }
                 retries += 1
             } else {
-                channelLogger.error(
-                    'AWS.output.sam.local.attach.retry.limit.exceeded',
-                    'Retry limit reached while trying to attach the debugger.'
-                )
+                channelLogger.error(LOCALIZEDIDS.Output.SAMLocal.RetryLimitExceeded)
 
                 isDebuggerAttached = false
             }
@@ -540,13 +524,9 @@ export async function attachDebugger({
     }
 
     if (isDebuggerAttached) {
-        channelLogger.info('AWS.output.sam.local.attach.success', 'Debugger attached')
+        channelLogger.info(LOCALIZEDIDS.Output.SAMLocal.AttachSuccess)
     } else {
-        channelLogger.error(
-            'AWS.output.sam.local.attach.failure',
-            // tslint:disable-next-line:max-line-length
-            'Unable to attach Debugger. Check the Terminal tab for output. If it took longer than expected to successfully start, you may still attach to it.'
-        )
+        channelLogger.error(LOCALIZEDIDS.Output.SAMLocal.AttachFailure)
     }
 
     return {
@@ -565,11 +545,7 @@ export async function waitForDebugPort(
     } catch (err) {
         getLogger().warn(`Timed out after ${timeoutDuration} ms waiting for port ${debugPort} to open`, err as Error)
 
-        channelLogger.warn(
-            'AWS.samcli.local.invoke.port.not.open',
-            // tslint:disable-next-line:max-line-length
-            "The debug port doesn't appear to be open. The debugger might not succeed when attaching to your SAM Application."
-        )
+        channelLogger.warn(LOCALIZEDIDS.SAMCLI.Local.Invoke.PortNotOpen)
     }
 }
 
@@ -655,8 +631,5 @@ async function showDebugConsole({
 }
 
 function messageUserWaitingToAttach(channelLogger: ChannelLogger) {
-    channelLogger.info(
-        'AWS.output.sam.local.waiting',
-        'Waiting for SAM Application to start before attaching debugger...'
-    )
+    channelLogger.info(LOCALIZEDIDS.Output.SAMLocal.Waiting)
 }

@@ -4,6 +4,7 @@
  */
 
 import * as vscode from 'vscode'
+import { LocalizationString } from '../../../src/shared/localizedIds'
 import { Loggable } from '../../shared/logger'
 import { ChannelLogger } from '../../shared/utilities/vsCodeUtils'
 import { MockOutputChannel } from '../mockOutputChannel'
@@ -19,23 +20,23 @@ export class FakeChannelLogger implements ChannelLogger {
 
     public channel: vscode.OutputChannel = new MockOutputChannel()
 
-    public info(nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]): void {
-        this.loggedInfoKeys.add(nlsKey)
+    public info(localizedString: LocalizationString, ...templateTokens: Loggable[]): void {
+        this.loggedInfoKeys.add(localizedString.id)
     }
 
-    public error(nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]): void {
-        this.loggedErrorKeys.add(nlsKey)
+    public error(localizedString: LocalizationString, ...templateTokens: Loggable[]): void {
+        this.loggedErrorKeys.add(localizedString.id)
     }
 
-    public debug(nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]): void {
-        this.loggedDebugKeys.add(nlsKey)
+    public debug(localizedString: LocalizationString, ...templateTokens: Loggable[]): void {
+        this.loggedDebugKeys.add(localizedString.id)
     }
 
-    public warn(nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]): void {
-        this.loggedWarnKeys.add(nlsKey)
+    public warn(localizedString: LocalizationString, ...templateTokens: Loggable[]): void {
+        this.loggedWarnKeys.add(localizedString.id)
     }
 
-    public verbose(nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]): void {
-        this.loggedVerboseKeys.add(nlsKey)
+    public verbose(localizedString: LocalizationString, ...templateTokens: Loggable[]): void {
+        this.loggedVerboseKeys.add(localizedString.id)
     }
 }

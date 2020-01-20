@@ -3,25 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
+import { getLocalizedText, LOCALIZEDIDS } from '../../../shared/localizedIds'
 
 export class ErrorTemplates {
     public static readonly SHOW_ERROR_DETAILS = `
     <h1>
-        ${localize('AWS.template.error.showErrorDetails.title', 'Error details for')} <%= parent.label %>
+        ${getLocalizedText(LOCALIZEDIDS.TemplateError.ShowErrorDetails.Title)} <%= parent.label %>
     </h1>
     <p>
 
     <h2>
-        ${localize('AWS.template.error.showErrorDetails.errorCode', 'Error code')}
+        ${getLocalizedText(LOCALIZEDIDS.TemplateError.ShowErrorDetails.ErrorCode)}
     </h2>
     <pre>
         <%= error.code %>
     </pre>
 
     <h2>
-        ${localize('AWS.template.error.showErrorDetails.errorMessage', 'Error message')}
+        ${getLocalizedText(LOCALIZEDIDS.TemplateError.ShowErrorDetails.ErrorMessage)}
     </h2>
     <pre>
         <%= error.message %>

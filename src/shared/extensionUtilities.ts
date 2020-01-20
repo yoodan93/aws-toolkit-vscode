@@ -6,14 +6,12 @@
 import * as _ from 'lodash'
 import * as path from 'path'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
 import { ScriptResource } from '../lambda/models/scriptResource'
 import { ext } from '../shared/extensionGlobals'
+import { getLocalizedText, LOCALIZEDIDS } from '../shared/localizedIds'
 import { mostRecentVersionKey, pluginVersion } from './constants'
 import { readFileAsString } from './filesystemUtilities'
 import { Logger } from './logger'
-
-const localize = nls.loadMessageBundle()
 
 export class ExtensionUtilities {
     public static getLibrariesForHtml(names: string[]): ScriptResource[] {
@@ -92,9 +90,7 @@ export async function showQuickStartWebview(context: vscode.ExtensionContext): P
         const view = await createQuickStartWebview(context)
         view.reveal()
     } catch {
-        vscode.window.showErrorMessage(
-            localize('AWS.command.quickStart.error', 'There was an error retrieving the Quick Start page')
-        )
+        vscode.window.showErrorMessage(getLocalizedText(LOCALIZEDIDS.Command.QuickStartError))
     }
 }
 
@@ -114,11 +110,10 @@ export async function createQuickStartWebview(
         context.extensionPath
     )
     // create hidden webview, leave it up to the caller to show
-    const view = vscode.window.createWebviewPanel(
-        'html',
-        localize('AWS.command.quickStart.title', 'AWS Toolkit - Quick Start'),
-        { viewColumn: vscode.ViewColumn.Active, preserveFocus: true }
-    )
+    const view = vscode.window.createWebviewPanel('html', getLocalizedText(LOCALIZEDIDS.Command.QuickStartTitle), {
+        viewColumn: vscode.ViewColumn.Active,
+        preserveFocus: true
+    })
     view.webview.html = html
 
     return view
@@ -169,13 +164,9 @@ export function setMostRecentVersion(context: vscode.ExtensionContext): void {
  * Publishes a toast with a link to the welcome page
  */
 async function promptQuickStart(): Promise<void> {
-    const view = localize('AWS.command.quickStart', 'View Quick Start')
+    const view = getLocalizedText(LOCALIZEDIDS.Command.QuickStart)
     const prompt = await vscode.window.showInformationMessage(
-        localize(
-            'AWS.message.prompt.quickStart.toastMessage',
-            'You are now using the AWS Toolkit for Visual Studio Code, version {0}',
-            pluginVersion
-        ),
+        getLocalizedText(LOCALIZEDIDS.Message.Prompt.QuickStartToastMessage, pluginVersion),
         view
     )
     if (prompt === view) {

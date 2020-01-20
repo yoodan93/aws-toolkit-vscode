@@ -5,16 +5,11 @@
 
 'use strict'
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
+import { getLocalizedText, LOCALIZEDIDS } from '../../shared/localizedIds'
 
 export function makeCheckLogsMessage(): string {
-    const commandName = localize('AWS.command.viewLogs', 'View AWS Toolkit Logs')
-    const message = localize(
-        'AWS.error.check.logs',
-        'Check the logs for more information by running the "{0}" command from the Command Palette.',
-        commandName
-    )
+    const commandName = getLocalizedText(LOCALIZEDIDS.Command.ViewLogs)
+    const message = getLocalizedText(LOCALIZEDIDS.Error.CheckLogs, commandName)
 
     return message
 }

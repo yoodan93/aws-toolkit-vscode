@@ -8,6 +8,7 @@ import * as vscode from 'vscode'
 
 import { access } from 'fs-extra'
 import { makeCoreCLRDebugConfiguration } from '../../lambda/local/debugConfiguration'
+import { LOCALIZEDIDS } from '../../shared/localizedIds'
 import { DefaultDockerClient, DockerClient } from '../clients/dockerClient'
 import { CloudFormation } from '../cloudformation/cloudformation'
 import { mkdir } from '../filesystem'
@@ -158,11 +159,7 @@ async function onLocalInvokeCommand(
     try {
         // Switch over to the output channel so the user has feedback that we're getting things ready
         channelLogger.channel.show(true)
-        channelLogger.info(
-            'AWS.output.sam.local.start',
-            'Preparing to run {0} locally...',
-            lambdaLocalInvokeParams.handlerName
-        )
+        channelLogger.info(LOCALIZEDIDS.Output.SAMLocal.Start, lambdaLocalInvokeParams.handlerName)
 
         const baseBuildDir = await makeBuildDir()
         const codeUri = getCodeUri(resource, lambdaLocalInvokeParams.samTemplate)
@@ -243,11 +240,7 @@ async function onLocalInvokeCommand(
         }
     } catch (err) {
         const error = err as Error
-        channelLogger.error(
-            'AWS.error.during.sam.local',
-            'An error occurred trying to run SAM Application locally: {0}',
-            error
-        )
+        channelLogger.error(LOCALIZEDIDS.Error.DuringSAMLocal, error)
     }
 
     return getMetricDatum({
@@ -458,11 +451,7 @@ async function _installDebugger(
     try {
         const vsdbgPath = getDebuggerPath(targetFolder)
 
-        channelLogger.info(
-            'AWS.samcli.local.invoke.debugger.install',
-            'Installing .NET Core Debugger to {0}...',
-            vsdbgPath
-        )
+        channelLogger.info(LOCALIZEDIDS.SAMCLI.Local.Invoke.Debugger.Install, vsdbgPath)
 
         await dockerClient.invoke({
             command: 'run',
@@ -482,8 +471,7 @@ async function _installDebugger(
         return { debuggerPath: vsdbgPath }
     } catch (err) {
         channelLogger.info(
-            'AWS.samcli.local.invoke.debugger.install.failed',
-            'Error installing .NET Core Debugger: {0}',
+            LOCALIZEDIDS.SAMCLI.Local.Invoke.Debugger.InstallFailed,
             err instanceof Error ? (err as Error) : String(err)
         )
 

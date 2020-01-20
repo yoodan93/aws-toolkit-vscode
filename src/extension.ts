@@ -20,7 +20,7 @@ import { DefaultAWSContextCommands } from './shared/defaultAwsContextCommands'
 import { DefaultResourceFetcher } from './shared/defaultResourceFetcher'
 import { ext } from './shared/extensionGlobals'
 import { showQuickStartWebview, toastNewUser } from './shared/extensionUtilities'
-import {getLocalizedText, LOCALIZEDIDS} from './shared/localizedIds'
+import { getLocalizedText, LOCALIZEDIDS } from './shared/localizedIds'
 import { getLogger } from './shared/logger'
 import { activate as activateLogger } from './shared/logger/activation'
 import { DefaultRegionProvider } from './shared/regions/defaultRegionProvider'
@@ -34,7 +34,6 @@ import { ExtensionDisposableFiles } from './shared/utilities/disposableFiles'
 import { getChannelLogger } from './shared/utilities/vsCodeUtils'
 
 export async function activate(context: vscode.ExtensionContext) {
-
     ext.context = context
     await activateLogger()
     const toolkitOutputChannel = vscode.window.createOutputChannel(getLocalizedText(LOCALIZEDIDS.Channel.AWSToolkit))
@@ -143,7 +142,7 @@ export async function activate(context: vscode.ExtensionContext) {
         await loginWithMostRecentCredentials(awsContext, toolkitSettings)
     } catch (error) {
         const channelLogger = getChannelLogger(toolkitOutputChannel)
-        channelLogger.error('AWS.channel.aws.toolkit.activation.error', 'Error Activating AWS Toolkit', error as Error)
+        channelLogger.error(LOCALIZEDIDS.Channel.AWSToolkitActivationError, error as Error)
         throw error
     }
 }

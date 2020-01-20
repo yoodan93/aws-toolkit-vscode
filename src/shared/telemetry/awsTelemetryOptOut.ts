@@ -4,11 +4,10 @@
  */
 
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
+import { getLocalizedText, LOCALIZEDIDS } from '../../shared/localizedIds'
 import { ext } from '../extensionGlobals'
 import { SettingsConfiguration } from '../settingsConfiguration'
 import { TelemetryService } from './telemetryService'
-const localize = nls.loadMessageBundle()
 
 export enum TelemetryOptOutOptions {
     Enable,
@@ -20,8 +19,8 @@ export class AwsTelemetryOptOut {
     private static readonly AWS_TELEMETRY_KEY = 'telemetry'
     private static readonly TELEMETRY_OPT_OUT_SHOWN = 'awsTelemetryOptOutShown'
 
-    private readonly responseYes: string = localize('AWS.telemetry.notificationYes', 'Enable')
-    private readonly responseNo: string = localize('AWS.telemetry.notificationNo', 'Disable')
+    private readonly responseYes: string = getLocalizedText(LOCALIZEDIDS.Telemetry.NotificationYes)
+    private readonly responseNo: string = getLocalizedText(LOCALIZEDIDS.Telemetry.NotificationNo)
 
     public constructor(
         public readonly service: TelemetryService,
@@ -94,11 +93,7 @@ export class AwsTelemetryOptOut {
     }
 
     public async showNotification(): Promise<string | undefined> {
-        const notificationMessage: string = localize(
-            'AWS.telemetry.notificationMessage',
-            // prettier-ignore
-            'Please help improve the AWS Toolkit by enabling it to send usage data to AWS. You can always change your mind later by going to the "AWS Configuration" section in your user settings.'
-        )
+        const notificationMessage: string = getLocalizedText(LOCALIZEDIDS.Telemetry.NotificationMessage)
 
         return vscode.window.showInformationMessage(notificationMessage, this.responseYes, this.responseNo)
     }

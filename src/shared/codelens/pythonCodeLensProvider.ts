@@ -8,6 +8,7 @@ import * as os from 'os'
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { PythonDebugConfiguration, PythonPathMapping } from '../../lambda/local/debugConfiguration'
+import { LOCALIZEDIDS } from '../../shared/localizedIds'
 import { CloudFormation } from '../cloudformation/cloudformation'
 import { VSCODE_EXTENSION_ID } from '../extensions'
 import { fileExists, readFileAsString } from '../filesystemUtilities'
@@ -203,7 +204,7 @@ export async function initialize({
         // Switch over to the output channel so the user has feedback that we're getting things ready
         channelLogger.channel.show(true)
 
-        channelLogger.info('AWS.output.sam.local.start', 'Preparing to run {0} locally...', args.handlerName)
+        channelLogger.info(LOCALIZEDIDS.Output.SAMLocal.Start, args.handlerName)
 
         let lambdaDebugFilePath: string | undefined
 
@@ -306,11 +307,7 @@ export async function initialize({
             })
         } catch (err) {
             const error = err as Error
-            channelLogger.error(
-                'AWS.error.during.sam.local',
-                'An error occurred trying to run SAM Application locally: {0}',
-                error
-            )
+            channelLogger.error(LOCALIZEDIDS.Error.DuringSAMLocal, error)
         } finally {
             if (lambdaDebugFilePath) {
                 await deleteFile(lambdaDebugFilePath)
@@ -386,11 +383,7 @@ export async function waitForPythonDebugAdapter(
     }
 
     if (!debugServerAvailable) {
-        channelLogger.warn(
-            'AWS.sam.local.invoke.python.server.not.available',
-            // tslint:disable-next-line:max-line-length
-            'Unable to communicate with the Python Debug Adapter. The debugger might not succeed when attaching to your SAM Application.'
-        )
+        channelLogger.warn(LOCALIZEDIDS.SAMLocalInvokePythonServerNotAvailable)
     }
 }
 

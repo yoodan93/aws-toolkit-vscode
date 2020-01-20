@@ -1,16 +1,20 @@
 /*!
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { localize } from '../shared/utilities/vsCodeUtils'
+import * as nls from 'vscode-nls'
+const localize = nls.loadMessageBundle()
 
- interface LocalizationString {id: string, defaultText: string }
+export interface LocalizationString {
+    id: string
+    defaultText: string
+}
 
- export function getLocalizedText(locString: LocalizationString, ...args: string[]) : string {
+export function getLocalizedText(locString: LocalizationString, ...args: string[]): string {
     return localize(locString.id, locString.defaultText, ...args)
- }
+}
 
- export const LOCALIZEDIDS = {
+export const LOCALIZEDIDS = {
     Title: {
         AWStitle: {
             id: 'AWS.title',
@@ -82,7 +86,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
         },
         SAMTemplateDepth: {
             id: 'AWS.configuration.sam.template.depth',
-            defaultText: 'The maximum subfolder depth within a workspace that the Toolkit will search for SAM Template files'
+            defaultText:
+                'The maximum subfolder depth within a workspace that the Toolkit will search for SAM Template files'
         },
         Description: {
             CDKExplorerEnabled: {
@@ -95,33 +100,38 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             },
             OnDefaultRegionMissing: {
                 id: 'AWS.configuration.description.onDefaultRegionMissing',
-                defaultText: "Action to take when a Profile's default region is hidden in the Explorer. Possible values:\n* `add` - shows region in the explorer\n* `ignore` - does nothing with the region\n* `prompt` - (default) asks the user what they would like to do."
+                defaultText:
+                    "Action to take when a Profile's default region is hidden in the Explorer. Possible values:\n* `add` - shows region in the explorer\n* `ignore` - does nothing with the region\n* `prompt` - (default) asks the user what they would like to do."
             },
             Telemetry: {
                 id: 'AWS.configuration.description.telemetry',
-                defaultText: 'Enable the AWS Toolkit to send usage data to AWS. `"Use the same setting as VS Code"` respects the value specified in "`telemetry.enableTelemetry`"'
+                defaultText:
+                    'Enable the AWS Toolkit to send usage data to AWS. `"Use the same setting as VS Code"` respects the value specified in "`telemetry.enableTelemetry`"'
             },
             SAMCLI: {
                 DebugAttachRetryMaximum: {
                     id: 'AWS.configuration.description.samcli.debug.attach.retry.maximum',
-                    defaultText: 'If the Toolkit is unable to attach a debugger, this is the number of times to retry before giving up.'
+                    defaultText:
+                        'If the Toolkit is unable to attach a debugger, this is the number of times to retry before giving up.'
                 },
                 DebugAttachTimeout: {
                     id: 'AWS.configuration.description.samcli.debug.attach.timeout',
-                    defaultText: 'Maximum amount of time to wait for debugger to connect to a SAM Local debug run (in milliseconds)'
+                    defaultText:
+                        'Maximum amount of time to wait for debugger to connect to a SAM Local debug run (in milliseconds)'
                 },
                 Location: {
                     id: 'AWS.configuration.description.samcli.location',
-                    defaultText: 'Location of SAM CLI. SAM CLI is used to create, build, package, and deploy Serverless Applications. [Learn More](https://aws.amazon.com/serverless/sam/)'
+                    defaultText:
+                        'Location of SAM CLI. SAM CLI is used to create, build, package, and deploy Serverless Applications. [Learn More](https://aws.amazon.com/serverless/sam/)'
                 }
             }
         }
-
     },
     Telemetry: {
         NotificationMessage: {
             id: 'AWS.telemetry.notificationMessage',
-            defaultText: 'Please help improve the AWS Toolkit by enabling it to send usage data to AWS. You can always change your mind later by going to the "AWS Configuration" section in your user settings.'
+            defaultText:
+                'Please help improve the AWS Toolkit by enabling it to send usage data to AWS. You can always change your mind later by going to the "AWS Configuration" section in your user settings.'
         },
         NotificationYes: {
             id: 'AWS.telemetry.notificationYes',
@@ -265,7 +275,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
         },
         Tooltip: {
             id: 'AWS.credentials.statusbar.tooltip',
-            defaultText: 'The current credentials used by the AWS Toolkit.\n\nClick this status bar item to use different credentials.'
+            defaultText:
+                'The current credentials used by the AWS Toolkit.\n\nClick this status bar item to use different credentials.'
         }
     },
     Error: {
@@ -291,7 +302,7 @@ import { localize } from '../shared/utilities/vsCodeUtils'
         }
     },
     ExplorerNode: {
-        AddRegion:{
+        AddRegion: {
             id: 'AWS.explorerNode.addRegion',
             defaultText: 'Add a region to view functions...'
         },
@@ -331,7 +342,7 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             id: 'AWS.explorerNode.container.noItems',
             defaultText: '[no items]'
         },
-        SchemasError:{
+        SchemasError: {
             id: 'AWS.explorerNode.schemas.error',
             defaultText: "Error loading Schemas resources TEST '{0}'"
         },
@@ -369,7 +380,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
         },
         ConfigureErrorFieldtype: {
             id: 'AWS.lambda.configure.error.fieldtype',
-            defaultText: 'Your templates.json file has an issue. {0} was detected as {1} instead of one of the following: [{2}]. Please change or remove this field, and try again.'
+            defaultText:
+                'Your templates.json file has an issue. {0} was detected as {1} instead of one of the following: [{2}]. Please change or remove this field, and try again.'
         },
         DebugNode: {
             LaunchConfigName: {
@@ -386,8 +398,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             }
         }
     },
-    Log:{
-        FileLocation:{
+    Log: {
+        FileLocation: {
             id: 'AWS.log.fileLocation',
             defaultText: 'Error logs for this session are permanently stored in {0}'
         },
@@ -406,7 +418,7 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 id: 'AWS.message.credentials.error',
                 defaultText: 'There was an issue trying to use credentials profile {0}: {1}'
             },
-            InvalidProfile:{
+            InvalidProfile: {
                 id: 'AWS.message.credentials.invalidProfile',
                 defaultText: 'Credentials profile {0} is invalid'
             },
@@ -451,7 +463,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             CloudFormation: {
                 Delete: {
                     id: 'AWS.message.error.cloudFormation.delete',
-                    defaultText: 'An error occurred while deleting CloudFormation Stack {0}. Please check the stack events on the AWS Console'
+                    defaultText:
+                        'An error occurred while deleting CloudFormation Stack {0}. Please check the stack events on the AWS Console'
                 },
                 Unsupported: {
                     id: 'AWS.message.error.cloudFormation.unsupported',
@@ -474,7 +487,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                     },
                     FailedToExtractCollision: {
                         id: 'AWS.message.error.schemas.downloadCodeBindings.failed_to_extract_collision',
-                        defaultText: 'Unable to place schema code in workspace because there is already a file {0} in the folder hierarchy'
+                        defaultText:
+                            'Unable to place schema code in workspace because there is already a file {0} in the folder hierarchy'
                     },
                     InvalidCodeGenerationStatus: {
                         id: 'AWS.message.error.schemas.downloadCodeBindings.invalid_code_generation_status',
@@ -533,7 +547,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             DefaultRegionHidden: {
                 CurrentlyHidden: {
                     id: 'AWS.message.prompt.defaultRegionHidden',
-                    defaultText: "This profile's default region ({0}) is currently hidden. Would you like to show it in the Explorer?"
+                    defaultText:
+                        "This profile's default region ({0}) is currently hidden. Would you like to show it in the Explorer?"
                 },
                 Add: {
                     id: 'AWS.message.prompt.defaultRegionHidden.add',
@@ -553,7 +568,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 },
                 Suppressed: {
                     id: 'AWS.message.prompt.defaultRegionHidden.suppressed',
-                    defaultText: "You will no longer be asked what to do when the current profile's default region is hidden from the Explorer. This behavior can be changed by modifying the '{0}' setting."
+                    defaultText:
+                        "You will no longer be asked what to do when the current profile's default region is hidden from the Explorer. This behavior can be changed by modifying the '{0}' setting."
                 }
             },
             CloudFormationDelete: {
@@ -563,7 +579,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             Credentials: {
                 Create: {
                     id: 'AWS.message.prompt.credentials.create',
-                    defaultText: 'You do not appear to have any AWS Credentials defined. Would you like to set one up now?'
+                    defaultText:
+                        'You do not appear to have any AWS Credentials defined. Would you like to set one up now?'
                 },
                 DefinitionHelp: {
                     id: 'AWS.message.prompt.credentials.definition.help',
@@ -582,14 +599,12 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 id: 'AWS.message.prompt.quickStart.toastMessage',
                 defaultText: 'You are now using the AWS Toolkit for Visual Studio Code, version {0}'
             }
-            //SCHEMAS are next on line 107-120, then move to line 142
-
         }
     },
-    Schemas:{
+    Schemas: {
         DownloadCodeBindings: {
-            InitWizard:{
-                LanguagePrompt:{
+            InitWizard: {
+                LanguagePrompt: {
                     id: 'AWS.schemas.downloadCodeBindings.initWizard.language.prompt',
                     defaultText: 'Select a code binding language'
                 },
@@ -670,7 +685,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             },
             AttachFailure: {
                 id: 'AWS.output.sam.local.attach.failure',
-                defaultText: 'Unable to attach Debugger. Check the Terminal tab for output. If it took longer than expected to successfully start, you may still attach to it.'
+                defaultText:
+                    'Unable to attach Debugger. Check the Terminal tab for output. If it took longer than expected to successfully start, you may still attach to it.'
             },
             RetryLimitExceeded: {
                 id: 'AWS.output.sam.local.attach.retry.limit.exceeded',
@@ -732,7 +748,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
     },
     SAMLocalInvokePythonServerNotAvailable: {
         id: 'AWS.sam.local.invoke.python.server.not.available',
-        defaultText: 'Unable to communicate with the Python Debug Adapter. The debugger might not successfully attach to your SAM Application.'
+        defaultText:
+            'Unable to communicate with the Python Debug Adapter. The debugger might not successfully attach to your SAM Application.'
     },
     SAMCLI: {
         DetectSettings: {
@@ -784,7 +801,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 MandatoryPrompt: {
                     Message: {
                         id: 'AWS.samcli.deploy.parameters.mandatoryPrompt.message',
-                        defaultText: 'The template {0} contains parameters without default values. In order to deploy, you must provide values for these parameters. Configure them now?'
+                        defaultText:
+                            'The template {0} contains parameters without default values. In order to deploy, you must provide values for these parameters. Configure them now?'
                     },
                     ResponseConfigure: {
                         id: 'AWS.samcli.deploy.parameters.mandatoryPrompt.responseConfigure',
@@ -798,11 +816,12 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 OptionalPrompt: {
                     Message: {
                         id: 'AWS.samcli.deploy.parameters.optionalPrompt.message',
-                        defaultText: 'The template {0} contains parameters. Would you like to override the default values for these parameters?'
+                        defaultText:
+                            'The template {0} contains parameters. Would you like to override the default values for these parameters?'
                     },
                     ResponseYes: {
                         id: 'AWS.samcli.deploy.parameters.optionalPrompt.responseYes',
-                        defaultText:  'Yes'
+                        defaultText: 'Yes'
                     },
                     ResponseNo: {
                         id: 'AWS.samcli.deploy.parameters.optionalPrompt.responseNo',
@@ -834,7 +853,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                     },
                     InvalidCharacters: {
                         id: 'AWS.samcli.deploy.s3Bucket.error.invalidCharacters',
-                        defaultText: 'S3 bucket name may only contain lower-case characters, numbers, periods, and dashes'
+                        defaultText:
+                            'S3 bucket name may only contain lower-case characters, numbers, periods, and dashes'
                     },
                     IPAddress: {
                         id: 'AWS.samcli.deploy.s3Bucket.error.ipAddress',
@@ -854,7 +874,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                     },
                     LabelFirstCharacter: {
                         id: 'AWS.samcli.deploy.s3Bucket.error.labelFirstCharacter',
-                        defaultText: 'Each label in an S3 bucket name must begin with a number or a lower-case character'
+                        defaultText:
+                            'Each label in an S3 bucket name must begin with a number or a lower-case character'
                     }
                 }
             },
@@ -866,7 +887,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 Error: {
                     InvalidCharacters: {
                         id: 'AWS.samcli.deploy.stackName.error.invalidCharacters',
-                        defaultText: 'A stack name may contain only alphanumeric characters (case sensitive) and hyphens'
+                        defaultText:
+                            'A stack name may contain only alphanumeric characters (case sensitive) and hyphens'
                     },
                     FirstCharacter: {
                         id: 'AWS.samcli.deploy.stackName.error.firstCharacter',
@@ -894,7 +916,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
         Error: {
             NotFound: {
                 id: 'AWS.samcli.error.notFound',
-                defaultText: 'Unable to find the SAM CLI, which is required to create new Serverless Applications and debug them locally. If you have already installed the SAM CLI, update your User Settings by locating it.'
+                defaultText:
+                    'Unable to find the SAM CLI, which is required to create new Serverless Applications and debug them locally. If you have already installed the SAM CLI, update your User Settings by locating it.'
             },
             NotFoundBrief: {
                 id: 'AWS.samcli.error.notFound.brief',
@@ -913,7 +936,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 },
                 PortNotOpen: {
                     id: 'AWS.samcli.local.invoke.port.not.open',
-                    defaultText: "The debug port doesn't appear to be open. The debugger might not succeed when attaching to your SAM Application."
+                    defaultText:
+                        "The debug port doesn't appear to be open. The debugger might not succeed when attaching to your SAM Application."
                 },
                 RuntimeUnsupported: {
                     id: 'AWS.samcli.local.invoke.runtime.unsupported',
@@ -938,7 +962,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
         Notification: {
             NotFound: {
                 id: 'AWS.samcli.notification.not.found',
-                defaultText: 'Unable to find SAM CLI. It is required in order to work with Serverless Applications locally.'
+                defaultText:
+                    'Unable to find SAM CLI. It is required in order to work with Serverless Applications locally.'
             },
             UnexpectedValidationIssue: {
                 id: 'AWS.samcli.notification.unexpected.validation.issue',
@@ -946,7 +971,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             },
             VersionInvalid: {
                 id: 'AWS.samcli.notification.version.invalid',
-                defaultText: 'Your SAM CLI version {0} does not meet requirements ({1}\u00a0\u2264\u00a0version\u00a0<\u00a0{2}). {3}'
+                defaultText:
+                    'Your SAM CLI version {0} does not meet requirements ({1}\u00a0\u2264\u00a0version\u00a0<\u00a0{2}). {3}'
             },
             VersionValid: {
                 id: 'AWS.samcli.notification.version.valid',
@@ -1017,7 +1043,8 @@ import { localize } from '../shared/utilities/vsCodeUtils'
                 },
                 NotInWorkspace: {
                     id: 'AWS.samcli.initWizard.source.error.notInWorkspace',
-                    defaultText: "Could not open file '{0}'. If this file exists on disk, try adding it to your workspace."
+                    defaultText:
+                        "Could not open file '{0}'. If this file exists on disk, try adding it to your workspace."
                 }
             }
         }
@@ -1070,5 +1097,4 @@ import { localize } from '../shared/utilities/vsCodeUtils'
             }
         }
     }
-
- }
+}

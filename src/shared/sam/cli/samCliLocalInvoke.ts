@@ -5,14 +5,12 @@
 
 import * as child_process from 'child_process'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
+import { getLocalizedText, LOCALIZEDIDS } from '../../../shared/localizedIds'
 import { fileExists } from '../../filesystemUtilities'
 import { ChildProcess } from '../../utilities/childProcess'
 import { removeAnsi } from '../../utilities/textUtilities'
 import { Timeout } from '../../utilities/timeoutUtils'
 import { ChannelLogger } from '../../utilities/vsCodeUtils'
-
-const localize = nls.loadMessageBundle()
 
 export const WAIT_FOR_DEBUGGER_MESSAGES = {
     PYTHON: 'Waiting for debugger to attach...',
@@ -32,7 +30,7 @@ export interface SamLocalInvokeCommandArgs {
  * Represents and manages the SAM CLI command that is run to locally invoke SAM Applications.
  */
 export interface SamLocalInvokeCommand {
-    invoke({  }: SamLocalInvokeCommandArgs): Promise<void>
+    invoke({}: SamLocalInvokeCommandArgs): Promise<void>
 }
 
 export class DefaultSamLocalInvokeCommand implements SamLocalInvokeCommand {
@@ -45,11 +43,7 @@ export class DefaultSamLocalInvokeCommand implements SamLocalInvokeCommand {
     ) {}
 
     public async invoke({ options = {}, ...params }: SamLocalInvokeCommandArgs): Promise<void> {
-        this.channelLogger.info(
-            'AWS.running.command',
-            'Running command: {0}',
-            `${params.command} ${params.args.join(' ')}`
-        )
+        this.channelLogger.info(LOCALIZEDIDS.RunningCommand, `${params.command} ${params.args.join(' ')}`)
 
         const childProcess = new ChildProcess(params.command, options, ...params.args)
         let debuggerPromiseClosed: boolean = false
@@ -76,9 +70,7 @@ export class DefaultSamLocalInvokeCommand implements SamLocalInvokeCommand {
                 },
                 onClose: (code: number, signal: string): void => {
                     this.channelLogger.logger.verbose(`The child process for sam local invoke closed with code ${code}`)
-                    this.channelLogger.channel.appendLine(
-                        localize('AWS.samcli.local.invoke.ended', 'Local invoke of SAM Application has ended.')
-                    )
+                    this.channelLogger.channel.appendLine(getLocalizedText(LOCALIZEDIDS.SAMCLI.Local.Invoke.Ended))
 
                     // Handles scenarios where the process exited before we anticipated.
                     // Example: We didn't see an expected debugger attach cue, and the process or docker container
@@ -89,11 +81,7 @@ export class DefaultSamLocalInvokeCommand implements SamLocalInvokeCommand {
                     }
                 },
                 onError: (error: Error): void => {
-                    this.channelLogger.error(
-                        'AWS.samcli.local.invoke.error',
-                        'Error encountered running local SAM Application',
-                        error
-                    )
+                    this.channelLogger.error(LOCALIZEDIDS.SAMCLI.Local.Invoke.Error, error)
                     debuggerPromiseClosed = true
                     reject(error)
                 }
@@ -112,11 +100,7 @@ export class DefaultSamLocalInvokeCommand implements SamLocalInvokeCommand {
             // otherwise, process closed out on its own; no need to kill the process
             if (!debuggerPromiseClosed) {
                 const err = new Error('The SAM process did not make the debugger available within the timelimit')
-                this.channelLogger.error(
-                    'AWS.samcli.local.invoke.debugger.timeout',
-                    'The SAM process did not make the debugger available within the time limit',
-                    err
-                )
+                this.channelLogger.error(LOCALIZEDIDS.SAMCLI.Local.Invoke.Debugger.Timeout, err)
                 if (!childProcess.killed) {
                     childProcess.kill()
                 }

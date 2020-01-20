@@ -5,22 +5,21 @@
 
 import * as AsyncLock from 'async-lock'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
+import { getLocalizedText, LOCALIZEDIDS } from '../../../shared/localizedIds'
 import { extensionSettingsPrefix, samAboutInstallUrl } from '../../constants'
 import { DefaultSettingsConfiguration } from '../../settingsConfiguration'
 import { DefaultSamCliConfiguration, SamCliConfiguration } from './samCliConfiguration'
 import { DefaultSamCliLocationProvider } from './samCliLocator'
 
-const localize = nls.loadMessageBundle()
 const lock = new AsyncLock()
 
-const learnMore = localize('AWS.samcli.userChoice.visit.install.url', 'Get SAM CLI')
+const learnMore = getLocalizedText(LOCALIZEDIDS.SAMCLI.UserChoice.VisitInstallURL)
 
-const browseToSamCli = localize('AWS.samcli.userChoice.browse', 'Locate SAM CLI...')
+const browseToSamCli = getLocalizedText(LOCALIZEDIDS.SAMCLI.UserChoice.Browse)
 
-const settingsUpdated = localize('AWS.samcli.detect.settings.updated', 'Settings updated.')
+const settingsUpdated = getLocalizedText(LOCALIZEDIDS.SAMCLI.DetectSettings.Updated)
 
-const settingsNotUpdated = localize('AWS.samcli.detect.settings.not.updated', 'No settings changes necessary.')
+const settingsNotUpdated = getLocalizedText(LOCALIZEDIDS.SAMCLI.DetectSettings.NotUpdated)
 
 export async function detectSamCli(showMessageIfDetected: boolean): Promise<void> {
     await lock.acquire('detect SAM CLI', async () => {
@@ -53,15 +52,7 @@ export async function detectSamCli(showMessageIfDetected: boolean): Promise<void
 function notifyUserSamCliNotDetected(samCliConfig: SamCliConfiguration): void {
     // inform the user, but don't wait for this to complete
     vscode.window
-        .showErrorMessage(
-            localize(
-                'AWS.samcli.error.notFound',
-                // tslint:disable-next-line:max-line-length
-                'Unable to find the SAM CLI, which is required to create new Serverless Applications and debug them locally. If you have already installed the SAM CLI, update your User Settings by locating it.'
-            ),
-            learnMore,
-            browseToSamCli
-        )
+        .showErrorMessage(getLocalizedText(LOCALIZEDIDS.SAMCLI.Error.NotFound), learnMore, browseToSamCli)
         .then(async userResponse => {
             if (userResponse === learnMore) {
                 await vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(samAboutInstallUrl))
@@ -83,13 +74,13 @@ function notifyUserSamCliNotDetected(samCliConfig: SamCliConfiguration): void {
 }
 
 function getSettingsUpdatedMessage(location: string): string {
-    const configuredLocation = localize('AWS.samcli.configured.location', 'Configured SAM CLI Location: {0}', location)
+    const configuredLocation = getLocalizedText(LOCALIZEDIDS.SAMCLI.ConfiguredLocation, location)
 
     return `${settingsUpdated} ${configuredLocation}`
 }
 
 function getSettingsNotUpdatedMessage(location: string): string {
-    const configuredLocation = localize('AWS.samcli.configured.location', 'Configured SAM CLI Location: {0}', location)
+    const configuredLocation = getLocalizedText(LOCALIZEDIDS.SAMCLI.ConfiguredLocation, location)
 
     return `${settingsNotUpdated} ${configuredLocation}`
 }

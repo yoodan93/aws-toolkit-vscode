@@ -4,14 +4,14 @@
  */
 import * as vscode from 'vscode'
 import * as nls from 'vscode-nls'
+import { getLocalizedText, LocalizationString } from '../../shared/localizedIds'
 import { getLogger, Loggable, Logger, LogLevel } from '../logger'
 
 // TODO: Consider NLS initialization/configuration here & have packages to import localize from here
 export const localize = nls.loadMessageBundle()
 
 export interface TemplateParams {
-    nlsKey: string
-    nlsTemplate: string
+    localizedString: LocalizationString
     templateTokens?: Loggable[]
 }
 
@@ -20,12 +20,11 @@ export interface TemplateParser {
 }
 
 export interface TemplateHandler {
-    (nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]): void
+    (localizedString: LocalizationString, ...templateTokens: Loggable[]): void
 }
 
 export function processTemplate<T extends TemplateParams>({
-    nlsKey,
-    nlsTemplate,
+    localizedString,
     templateTokens = []
 }: T): { errors: Error[]; prettyMessage: string } {
     const prettyTokens: Exclude<Loggable, Error>[] = []
@@ -40,7 +39,7 @@ export function processTemplate<T extends TemplateParams>({
             }
         })
     }
-    const prettyMessage = localize(nlsKey, nlsTemplate, ...prettyTokens)
+    const prettyMessage = getLocalizedText(localizedString, ...prettyTokens)
 
     return {
         errors,
@@ -63,11 +62,11 @@ export interface ChannelLogger {
  * Avoids making two log statements when writing to output channel and improves consistency
  */
 export function getChannelLogger(channel: vscode.OutputChannel, logger: Logger = getLogger()): ChannelLogger {
-    function log({ nlsKey, nlsTemplate, templateTokens, level }: TemplateParams & { level: LogLevel }): void {
+    function log({ localizedString, templateTokens, level }: TemplateParams & { level: LogLevel }): void {
         if (level === 'error') {
             channel.show(true)
         }
-        const { prettyMessage, errors } = processTemplate({ nlsKey, nlsTemplate, templateTokens })
+        const { prettyMessage, errors } = processTemplate({ localizedString, templateTokens })
         channel.appendLine(prettyMessage)
         // TODO: Log in english if/when we get multi lang support
         // Log pretty message then Error objects (so logger might show stack traces)
@@ -77,39 +76,34 @@ export function getChannelLogger(channel: vscode.OutputChannel, logger: Logger =
     return Object.freeze({
         channel,
         logger,
-        verbose: (nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]) =>
+        verbose: (localizedString: LocalizationString, ...templateTokens: Loggable[]) =>
             log({
                 level: 'verbose',
-                nlsKey,
-                nlsTemplate,
+                localizedString,
                 templateTokens
             }),
-        debug: (nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]) =>
+        debug: (localizedString: LocalizationString, ...templateTokens: Loggable[]) =>
             log({
                 level: 'debug',
-                nlsKey,
-                nlsTemplate,
+                localizedString,
                 templateTokens
             }),
-        info: (nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]) =>
+        info: (localizedString: LocalizationString, ...templateTokens: Loggable[]) =>
             log({
                 level: 'info',
-                nlsKey,
-                nlsTemplate,
+                localizedString,
                 templateTokens
             }),
-        warn: (nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]) =>
+        warn: (localizedString: LocalizationString, ...templateTokens: Loggable[]) =>
             log({
                 level: 'warn',
-                nlsKey,
-                nlsTemplate,
+                localizedString,
                 templateTokens
             }),
-        error: (nlsKey: string, nlsTemplate: string, ...templateTokens: Loggable[]) =>
+        error: (localizedString: LocalizationString, ...templateTokens: Loggable[]) =>
             log({
                 level: 'error',
-                nlsKey,
-                nlsTemplate,
+                localizedString,
                 templateTokens
             })
     })

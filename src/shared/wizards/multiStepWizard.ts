@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import * as os from 'os'
 import * as vscode from 'vscode'
+import { getLocalizedText, LOCALIZEDIDS } from '../../shared/localizedIds'
 
 export interface WizardStep {
     (): Thenable<WizardStep | undefined>
@@ -61,13 +59,10 @@ export class BrowseFolderQuickPickItem implements FolderQuickPickItem {
 
     public get label(): string {
         if (this.context.workspaceFolders && this.context.workspaceFolders.length > 0) {
-            return localize('AWS.initWizard.location.select.folder', 'Select a different folder...')
+            return getLocalizedText(LOCALIZEDIDS.InitWizard.Location.SelectFolder)
         }
 
-        return localize(
-            'AWS.initWizard.location.select.folder.empty.workspace',
-            'There are no workspace folders open. Select a folder...'
-        )
+        return getLocalizedText(LOCALIZEDIDS.InitWizard.Location.SelectFolderEmptyWorkspace)
     }
 
     public async getUri(): Promise<vscode.Uri | undefined> {
@@ -77,7 +72,7 @@ export class BrowseFolderQuickPickItem implements FolderQuickPickItem {
 
         const result = await this.context.showOpenDialog({
             defaultUri,
-            openLabel: localize('AWS.samcli.initWizard.name.browse.openLabel', 'Open'),
+            openLabel: getLocalizedText(LOCALIZEDIDS.InitWizard.NameBrowseOpenLabel),
             canSelectFiles: false,
             canSelectFolders: true,
             canSelectMany: false

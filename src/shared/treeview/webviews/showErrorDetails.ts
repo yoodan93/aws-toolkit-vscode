@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as nls from 'vscode-nls'
-const localize = nls.loadMessageBundle()
-
 import _ = require('lodash')
 import * as vscode from 'vscode'
+import { getLocalizedText, LOCALIZEDIDS } from '../../../shared/localizedIds'
 import { getLogger, Logger } from '../../logger'
 import { BaseTemplates } from '../../templates/baseTemplates'
 import { ErrorNode } from '../nodes/errorNode'
@@ -24,7 +22,7 @@ export async function showErrorDetails(element: ErrorNode) {
 
     try {
         const baseTemplateFn = _.template(BaseTemplates.SIMPLE_HTML)
-        view.webview.html = baseTemplateFn({ content: `<h1>${localize('AWS.message.loading', 'Loading...')}</h1>` })
+        view.webview.html = baseTemplateFn({ content: `<h1>${getLocalizedText(LOCALIZEDIDS.Message.Loading)}</h1>` })
 
         const showErrorDetailsTemplateFn = _.template(ErrorTemplates.SHOW_ERROR_DETAILS)
         view.webview.html = baseTemplateFn({

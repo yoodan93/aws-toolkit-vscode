@@ -7,7 +7,7 @@ import * as path from 'path'
 import * as vscode from 'vscode'
 import { ActivationLaunchPath } from '../../shared/activationLaunchPath'
 import { fileExists } from '../../shared/filesystemUtilities'
-import {getLocalizedText, LOCALIZEDIDS} from '../../shared/localizedIds'
+import { getLocalizedText, LOCALIZEDIDS } from '../../shared/localizedIds'
 import { getSamCliContext, SamCliContext } from '../../shared/sam/cli/samCliContext'
 import { runSamCliInit, SamCliInitArgs } from '../../shared/sam/cli/samCliInit'
 import { throwAndNotifyIfInvalid } from '../../shared/sam/cli/samCliValidationUtils'
@@ -35,9 +35,7 @@ export async function resumeCreateNewSamApp(activationLaunchPath: ActivationLaun
             // This should never happen, as `pathToLaunch` will only be set if `uri` is in
             // the newly added workspace folder.
             vscode.window.showErrorMessage(
-                getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.SourceError.NotInWorkspace,
-                    uri.fsPath
-                )
+                getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.SourceError.NotInWorkspace, uri.fsPath)
             )
 
             return
@@ -120,11 +118,7 @@ export async function createNewSamApplication(
         const checkLogsMessage = makeCheckLogsMessage()
 
         channelLogger.channel.show(true)
-        channelLogger.error(
-            'AWS.samcli.initWizard.general.error',
-            'An error occurred while creating a new SAM Application. {0}',
-            checkLogsMessage
-        )
+        channelLogger.error(LOCALIZEDIDS.SAMCLI.InitWizard.GeneralError, checkLogsMessage)
 
         const error = err as Error
         channelLogger.logger.error(error)
@@ -151,9 +145,7 @@ async function getMainUri(
         return vscode.Uri.file(samTemplatePath)
     } else {
         vscode.window.showWarningMessage(
-            getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.SourceError.NotFound,
-                samTemplatePath
-            )
+            getLocalizedText(LOCALIZEDIDS.SAMCLI.InitWizard.SourceError.NotFound, samTemplatePath)
         )
     }
 }

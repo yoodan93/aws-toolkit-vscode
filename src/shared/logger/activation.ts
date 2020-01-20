@@ -7,8 +7,8 @@ import * as moment from 'moment'
 import * as os from 'os'
 import * as path from 'path'
 import * as vscode from 'vscode'
-import * as nls from 'vscode-nls'
 import { Logger, LogLevel } from '.'
+import { getLocalizedText, LOCALIZEDIDS } from '../../shared/localizedIds'
 import { extensionSettingsPrefix } from '../constants'
 import { mkdir } from '../filesystem'
 import { fileExists } from '../filesystemUtilities'
@@ -16,8 +16,6 @@ import { DefaultSettingsConfiguration, SettingsConfiguration } from '../settings
 import { registerCommand } from '../telemetry/telemetryUtils'
 import { setLogger } from './logger'
 import { WinstonToolkitLogger } from './winstonToolkitLogger'
-
-const localize = nls.loadMessageBundle()
 
 const LOG_PATH = path.join(getLogBasePath(), 'Code', 'logs', 'aws_toolkit', makeLogFilename())
 const DEFAULT_LOG_LEVEL: LogLevel = 'info'
@@ -37,9 +35,7 @@ export async function activate(): Promise<void> {
 
     await registerLoggerCommands()
 
-    outputChannel.appendLine(
-        localize('AWS.log.fileLocation', 'Error logs for this session are permanently stored in {0}', logPath)
-    )
+    outputChannel.appendLine(getLocalizedText(LOCALIZEDIDS.Log.FileLocation, logPath))
 }
 
 export function makeLogger(logLevel: LogLevel, logPath: string, outputChannel: vscode.OutputChannel): Logger {
