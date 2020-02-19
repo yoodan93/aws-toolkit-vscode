@@ -10,6 +10,7 @@ import { LambdaNode } from '../lambda/explorer/lambdaNodes'
 import { Region } from '../shared/regions/endpoints'
 import { RegionProvider } from '../shared/regions/regionProvider'
 import { AWSTreeNodeBase } from '../shared/treeview/nodes/awsTreeNodeBase'
+import { S3Node } from '../s3/s3Node'
 
 /**
  * An AWS Explorer node representing a region.
@@ -36,7 +37,8 @@ export class RegionNode extends AWSTreeNodeBase {
 
         const serviceCandidates = [
             { serviceId: 'cloudformation', createFn: () => new CloudFormationNode(this.regionCode) },
-            { serviceId: 'lambda', createFn: () => new LambdaNode(this.regionCode) },
+            { serviceId: 'lambda', createFn: () => new S3Node(this.regionCode) },
+            { serviceId: 's3', createFn: () => new LambdaNode(this.regionCode) },
             { serviceId: 'schemas', createFn: () => new SchemasNode(this.regionCode) }
         ]
 

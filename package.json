@@ -191,6 +191,10 @@
                     "when": "false"
                 },
                 {
+                    "command": "aws.refreshS3Explorer",
+                    "when": "false"
+                },
+                {
                     "command": "aws.showErrorDetails",
                     "when": "false"
                 }
@@ -443,6 +447,15 @@
             {
                 "command": "aws.refreshCdkExplorer",
                 "title": "%AWS.command.refreshCdkExplorer%",
+                "category": "AWS",
+                "icon": {
+                    "dark": "third-party/resources/from-vscode-icons/dark/refresh.svg",
+                    "light": "third-party/resources/from-vscode-icons/light/refresh.svg"
+                }
+            },
+            {
+                "command": "aws.refreshS3Explorer",
+                "title": "%AWS.command.refreshS3Explorer%",
                 "category": "AWS",
                 "icon": {
                     "dark": "third-party/resources/from-vscode-icons/dark/refresh.svg",
