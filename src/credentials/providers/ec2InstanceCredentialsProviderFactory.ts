@@ -14,6 +14,6 @@ export class Ec2InstanceCredentialsProviderFactory extends BaseCredentialsProvid
     }
 
     public async refresh(): Promise<void> {
-        throw new Error('Method not implemented.')
+        // TODO
     }
 }
