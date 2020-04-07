@@ -8,9 +8,17 @@ import { CredentialsProvider } from './credentialsProvider'
 import { CredentialsProviderId } from './credentialsProviderId'
 import { getStringHash } from '../../shared/utilities/textUtilities'
 
-export class Ec2InstanceCredentialsProvider implements CredentialsProvider {
-    private static readonly CREDENTIALS_TYPE = 'ec2Instance'
-    private static readonly PROFILE_NAME = 'ec2Instance'
+class Ec2InstanceCredentialsProvider implements CredentialsProvider {
+    private static readonly CREDENTIALS_TYPE = 'ec2'
+    private static readonly PROFILE_NAME = 'instance'
+    private readonly provider = new AWS.CredentialProviderChain([
+        () =>
+            new AWS.EC2MetadataCredentials({
+                httpOptions: { timeout: 5000 },
+                maxRetries: 10,
+            }),
+    ])
+    // private readonly logger: Logger = getLogger()
 
     public getCredentialsProviderId(): CredentialsProviderId {
         return {
@@ -26,22 +34,17 @@ export class Ec2InstanceCredentialsProvider implements CredentialsProvider {
     }
 
     public async getCredentials(): Promise<AWS.Credentials> {
-        const provider = new AWS.CredentialProviderChain([
-            () =>
-                new AWS.EC2MetadataCredentials({
-                    httpOptions: { timeout: 5000 },
-                    maxRetries: 10,
-                }),
-        ])
-        return await provider.resolvePromise()
+        return await this.provider.resolvePromise()
     }
 
     // TODO
     public canAutoConnect(): boolean {
-        return true
+        return false
     }
 
     public static getCredentialsType(): string {
         return Ec2InstanceCredentialsProvider.CREDENTIALS_TYPE
     }
 }
+
+export { Ec2InstanceCredentialsProvider }
