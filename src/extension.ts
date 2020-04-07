@@ -13,6 +13,7 @@ import { initialize as initializeCredentials, loginWithMostRecentCredentials } f
 import { initializeAwsCredentialsStatusBarItem } from './credentials/awsCredentialsStatusBarItem'
 import { LoginManager } from './credentials/loginManager'
 import { CredentialsProviderManager } from './credentials/providers/credentialsProviderManager'
+import { Ec2InstanceCredentialsProviderFactory } from './credentials/providers/ec2InstanceCredentialsProviderFactory'
 import { SharedCredentialsProviderFactory } from './credentials/providers/sharedCredentialsProviderFactory'
 import { activate as activateSchemas } from './eventSchemas/activation'
 import { DefaultAWSClientBuilder } from './shared/awsClientBuilder'
@@ -236,6 +237,7 @@ function initializeManifestPaths(extensionContext: vscode.ExtensionContext) {
 
 function initializeCredentialsProviderManager() {
     CredentialsProviderManager.getInstance().addProviderFactory(new SharedCredentialsProviderFactory())
+    CredentialsProviderManager.getInstance().addProviderFactory(new Ec2InstanceCredentialsProviderFactory())
 }
 
 function makeEndpointsProvider(): EndpointsProvider {
