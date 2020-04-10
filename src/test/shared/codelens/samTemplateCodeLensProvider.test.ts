@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert'
+import * as path from 'path'
 import { instance, mock, when } from 'ts-mockito'
 import * as vscode from 'vscode'
 import { TemplateFunctionResource, TemplateSymbolResolver } from '../../../shared/cloudformation/templateSymbolResolver'
@@ -23,6 +24,7 @@ const functionResources: TemplateFunctionResource[] = [
         range: range,
     },
 ]
+const correctPath = path.join('/', 'this', 'here', 'path')
 const debugConfigurations: AwsSamDebuggerConfiguration[] = [
     {
         type: 'type',
@@ -30,7 +32,7 @@ const debugConfigurations: AwsSamDebuggerConfiguration[] = [
         request: 'request',
         invokeTarget: {
             target: 'template',
-            samTemplatePath: '/',
+            samTemplatePath: correctPath,
             samTemplateResource: 'existingResource',
         },
     },
@@ -40,12 +42,12 @@ const debugConfigurations: AwsSamDebuggerConfiguration[] = [
         request: 'request',
         invokeTarget: {
             target: 'template',
-            samTemplatePath: '/some/other/template/with/the/same/resource/name',
+            samTemplatePath: path.join('/', 'some', 'other', 'template', 'with', 'the', 'same', 'resource', 'name'),
             samTemplateResource: 'newResource',
         },
     },
 ]
-const templateUri = vscode.Uri.file('/')
+const templateUri = vscode.Uri.file(correctPath)
 
 describe('SamTemplateCodeLensProvider', async () => {
     const codeLensProvider = new SamTemplateCodeLensProvider()
@@ -65,7 +67,7 @@ describe('SamTemplateCodeLensProvider', async () => {
         when(mockLaunchConfig.getSamDebugConfigurations()).thenReturn(debugConfigurations)
     })
 
-    it('provides a code lenses for a file with a new resource', async () => {
+    it.only('provides a code lenses for a file with a new resource', async () => {
         when(mockSymbolResolver.getFunctionResources()).thenResolve(functionResources)
 
         const codeLenses = await codeLensProvider.provideCodeLenses(
