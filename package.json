@@ -452,6 +452,16 @@
                     "command": "aws.previewStateMachine",
                     "when": "editorLangId == asl",
                     "group": "navigation"
+                },
+                {
+                    "command": "aws.tailLog",
+                    "when": "resourceScheme == awsCloudWatchLogs",
+                    "group": "navigation"
+                },
+                {
+                    "command": "aws.loadOlderLogs",
+                    "when": "resourceScheme == awsCloudWatchLogs",
+                    "group": "navigation"
                 }
             ],
             "view/title": [
@@ -600,6 +610,21 @@
             ]
         },
         "commands": [
+            {
+                "command": "aws.openLog",
+                "title": "Open Log",
+                "category": "AWS"
+            },
+            {
+                "command": "aws.tailLog",
+                "title": "Tail Log",
+                "category": "AWS"
+            },
+            {
+                "command": "aws.loadOlderLogs",
+                "title": "Load Older Logs",
+                "category": "AWS"
+            },
             {
                 "command": "aws.lambda.createNewSamApp",
                 "title": "%AWS.command.createNewSamApp%",

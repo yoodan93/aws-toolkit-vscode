@@ -19,6 +19,7 @@ import { DefaultAWSClientBuilder } from './shared/awsClientBuilder'
 import { AwsContextTreeCollection } from './shared/awsContextTreeCollection'
 import { DefaultToolkitClientBuilder } from './shared/clients/defaultToolkitClientBuilder'
 import { activate as activateCloudFormationTemplateRegistry } from './shared/cloudformation/activation'
+import { activate as activateCloudWatchLogs } from './shared/cloudwatch/activation'
 import {
     documentationUrl,
     endpointsFileUrl,
@@ -184,6 +185,10 @@ export async function activate(context: vscode.ExtensionContext) {
             regionProvider,
             telemetryService: ext.telemetry,
             toolkitSettings,
+        })
+
+        await activateCloudWatchLogs({
+            extensionContext: context,
         })
 
         setImmediate(async () => {
