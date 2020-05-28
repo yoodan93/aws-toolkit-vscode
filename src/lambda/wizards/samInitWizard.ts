@@ -55,7 +55,7 @@ export interface CreateNewSamAppWizardContext {
 
 export class DefaultCreateNewSamAppWizardContext extends WizardContext implements CreateNewSamAppWizardContext {
     public readonly lambdaRuntimes = samLambdaCreatableRuntimes
-    private readonly helpButton = createHelpButton(localize('AWS.command.help', 'View Documentation'))
+    private readonly helpButton = createHelpButton(localize('AWS.command.help', 'View Toolkit Documentation'))
     private readonly currentCredentials: Credentials | undefined
     private readonly schemasRegions: Region[]
 
