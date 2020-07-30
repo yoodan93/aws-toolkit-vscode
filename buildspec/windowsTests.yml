@@ -9,6 +9,10 @@ phases:
                 if(-Not($Env:CODE_COV_TOKEN -eq $null)) {
                     choco install -y --no-progress codecov
                 }
+                &python --version
+                &pip --version
+                &pip install getmac
+                &getmac --version
     pre_build:
         commands:
             - npm install
