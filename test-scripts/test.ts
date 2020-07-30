@@ -23,6 +23,7 @@ import { env } from 'process'
             vscodeExecutablePath: vsCodeExecutablePath,
             extensionDevelopmentPath: cwd,
             extensionTestsPath: testEntrypoint,
+            launchArgs: ['--verbose', '--log', 'debug'],
         })
 
         console.log(`Finished running Main test suite with result code: ${result}`)
